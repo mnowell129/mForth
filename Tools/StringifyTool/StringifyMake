@@ -1,0 +1,22 @@
+GEN_FILES := $(basename $(wildcard *.src))
+
+MAKES_FILES := $(addsuffix .h, $(filter-out $(MAKESALL_BASES), $(GEN_FILES)))
+MAKESALL_FILES := $(addsuffix .h, $(filter $(MAKESALL_BASES), $(GEN_FILES)))
+
+# default make is to create .h files from .src files
+all: $(MAKES_FILES) $(MAKESALL_FILES)
+
+$(MAKES_FILES): %.h: %.src
+	$(TOOLS_DIR)/StringifyTool/makes.exe $< $@
+
+$(MAKESALL_FILES): %.h: %.src
+	$(TOOLS_DIR)/StringifyTool/makesall.exe $< $@
+
+# removes all .h files which are dependent upon .src files
+clean:
+	rm -f $(MAKES_FILES) $(MAKESALL_FILES)
+
+# updates .gitignore file to ignore all .h files dependent on .src files
+gitignore:
+	ls *.src | sed {s/\.src/\.h/} > .gitignore
+

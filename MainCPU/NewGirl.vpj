@@ -1,0 +1,414 @@
+<!DOCTYPE Project SYSTEM "http://www.slickedit.com/dtd/vse/10.0/vpj.dtd">
+<Project
+   WorkingDir="."
+   Version="10.0"
+   VendorName="SlickEdit"
+   TemplateName="IAR 8.40.3"
+   Customized="1">
+   <Config
+      Name="Release"
+      OutputFile=""
+      CompilerConfigName="">
+      <Menu>
+         <Target
+            Name="Compile"
+            MenuCaption="&amp;Compile"
+            CaptureOutputWith="ProcessBuffer"
+            SaveOption="SaveCurrent"
+            RunFromDir="%rw">
+            <Exec/>
+         </Target>
+         <Target
+            Name="Build"
+            MenuCaption="&amp;Build"
+            CaptureOutputWith="ProcessBuffer"
+            SaveOption="SaveWorkspaceFiles"
+            RunFromDir="%rw">
+            <Exec/>
+         </Target>
+         <Target
+            Name="Rebuild"
+            MenuCaption="&amp;Rebuild"
+            CaptureOutputWith="ProcessBuffer"
+            SaveOption="SaveWorkspaceFiles"
+            RunFromDir="%rw">
+            <Exec/>
+         </Target>
+         <Target
+            Name="Debug"
+            MenuCaption="&amp;Debug"
+            SaveOption="SaveNone"
+            RunFromDir="%rw">
+            <Exec/>
+         </Target>
+         <Target
+            Name="Execute"
+            MenuCaption="E&amp;xecute"
+            SaveOption="SaveNone"
+            RunFromDir="%rw">
+            <Exec CmdLine='"NewGirl.exe"'/>
+         </Target>
+      </Menu>
+      <Includes>
+         <Include Dir="C:/Program Files (x86)/IAR Systems/Embedded Workbench 8.40.1/arm/inc/c/"/>
+         <Include Dir="C:/Program Files (x86)/IAR Systems/Embedded Workbench 8.40.1/arm/inc/asm/"/>
+         <Include Dir="C:/Program Files (x86)/IAR Systems/Embedded Workbench 8.40.1/arm/CMSIS/Include/"/>
+         <Include Dir="C:/Program Files (x86)/IAR Systems/Embedded Workbench 8.4.1/arm/src/lib/"/>
+         <Include Dir="C:/Program Files (x86)/IAR Systems/Embedded Workbench 8.40.1/arm/src/lib/dlib/"/>
+         <Include Dir="C:/Program Files (x86)/IAR Systems/Embedded Workbench 8.40.1/arm/src/lib/init/"/>
+      </Includes>
+   </Config>
+   <CustomFolders>
+      <Folder
+         Name="Source Files"
+         Filters="*.c;*.C;*.cc;*.cpp;*.cp;*.cxx;*.c++;*.prg;*.pas;*.dpr;*.asm;*.s;*.bas;*.java;*.cs;*.sc;*.scala;*.e;*.cob;*.html;*.rc;*.tcl;*.py;*.pl;*.d;*.m;*.mm;*.go;*.groovy;*.gsh"
+         GUID="{CB59092D-6F5C-4566-AAE3-E2005B6079B9}"></Folder>
+      <Folder
+         Name="Header Files"
+         Filters="*.h;*.H;*.hh;*.hpp;*.hxx;*.h++;*.inc;*.sh;*.cpy;*.if"
+         GUID="{93B1DC57-CC5C-4A3E-E58B-E9F27AED419D}"></Folder>
+      <Folder
+         Name="Resource Files"
+         Filters="*.ico;*.cur;*.dlg"
+         GUID="{FBC5CF36-2B68-49B2-D8CB-7E12E8FF6E99}"/>
+      <Folder
+         Name="Bitmaps"
+         Filters="*.bmp"
+         GUID="{BAF706C3-CA6F-4CBB-80D8-C05F725A4489}"/>
+      <Folder
+         Name="Other Files"
+         Filters=""
+         GUID="{177B4CEE-64EE-45E0-B4C3-3F054FA26DAE}"/>
+   </CustomFolders>
+   <Files AutoFolders="DirectoryView">
+      <Folder Name="../Device">
+         <F N="../Device/usart.c"/>
+         <F N="../Device/usart.h"/>
+         <F N="../Device/USART0.c"/>
+         <F N="../Device/usart0.h"/>
+      </Folder>
+      <Folder Name="../Infrastructure">
+         <F N="../Infrastructure/ascii.h"/>
+         <F N="../Infrastructure/conio.c"/>
+         <F N="../Infrastructure/conio.h"/>
+         <F N="../Infrastructure/snprintf99.c"/>
+         <F N="../Infrastructure/snprintf99.h"/>
+         <F N="../Infrastructure/snprintf99_org.c"/>
+         <F N="../Infrastructure/type.h"/>
+      </Folder>
+      <Folder Name="../M3MForth">
+         <F N="../M3MForth/asswords.c"/>
+         <F N="../M3MForth/asswords.h"/>
+         <F N="../M3MForth/bits.h"/>
+         <F N="../M3MForth/coredefs.h"/>
+         <F N="../M3MForth/corewords.c"/>
+         <F N="../M3MForth/corewords.h"/>
+         <F N="../M3MForth/dos.c"/>
+         <F N="../M3MForth/dos.h"/>
+         <F N="../M3MForth/float.c"/>
+         <F N="../M3MForth/float.h"/>
+         <F N="../M3MForth/forth.c"/>
+         <F N="../M3MForth/forth.h"/>
+         <F N="../M3MForth/forthconfig_sample.h"/>
+         <F N="../M3MForth/forthmakes.c"/>
+         <F N="../M3MForth/forthos.h"/>
+         <F N="../M3MForth/ftypes.h"/>
+         <F N="../M3MForth/words.c"/>
+         <F N="../M3MForth/words.h"/>
+      </Folder>
+      <Folder Name="../SDK">
+         <Folder Name="CMSIS">
+            <Folder Name="Include">
+               <F N="../SDK/CMSIS/Include/arm_common_tables.h"/>
+               <F N="../SDK/CMSIS/Include/arm_const_structs.h"/>
+               <F N="../SDK/CMSIS/Include/arm_math.h"/>
+               <F N="../SDK/CMSIS/Include/cmsis_armcc.h"/>
+               <F N="../SDK/CMSIS/Include/cmsis_armclang.h"/>
+               <F N="../SDK/CMSIS/Include/cmsis_armclang_ltm.h"/>
+               <F N="../SDK/CMSIS/Include/cmsis_compiler.h"/>
+               <F N="../SDK/CMSIS/Include/cmsis_gcc.h"/>
+               <F N="../SDK/CMSIS/Include/cmsis_iccarm.h"/>
+               <F N="../SDK/CMSIS/Include/cmsis_version.h"/>
+               <F N="../SDK/CMSIS/Include/core_armv81mml.h"/>
+               <F N="../SDK/CMSIS/Include/core_armv8mbl.h"/>
+               <F N="../SDK/CMSIS/Include/core_armv8mml.h"/>
+               <F N="../SDK/CMSIS/Include/core_cm0.h"/>
+               <F N="../SDK/CMSIS/Include/core_cm0plus.h"/>
+               <F N="../SDK/CMSIS/Include/core_cm1.h"/>
+               <F N="../SDK/CMSIS/Include/core_cm23.h"/>
+               <F N="../SDK/CMSIS/Include/core_cm3.h"/>
+               <F N="../SDK/CMSIS/Include/core_cm33.h"/>
+               <F N="../SDK/CMSIS/Include/core_cm35p.h"/>
+               <F N="../SDK/CMSIS/Include/core_cm4.h"/>
+               <F N="../SDK/CMSIS/Include/core_cm7.h"/>
+               <F N="../SDK/CMSIS/Include/core_dsp.h"/>
+               <F N="../SDK/CMSIS/Include/core_sc000.h"/>
+               <F N="../SDK/CMSIS/Include/core_sc300.h"/>
+               <F N="../SDK/CMSIS/Include/mpu_armv7.h"/>
+               <F N="../SDK/CMSIS/Include/mpu_armv8.h"/>
+               <F N="../SDK/CMSIS/Include/tz_context.h"/>
+            </Folder>
+         </Folder>
+         <Folder Name="devices">
+            <Folder Name="LPC55S69">
+               <Folder Name="drivers">
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_anactrl.c"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_anactrl.h"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_casper.c"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_casper.h"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_clock.c"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_clock.h"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_cmp.c"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_cmp.h"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_common.c"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_common.h"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_crc.c"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_crc.h"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_ctimer.c"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_ctimer.h"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_dma.c"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_dma.h"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_flexcomm.c"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_flexcomm.h"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_gint.c"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_gint.h"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_gpio.c"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_gpio.h"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_hashcrypt.c"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_hashcrypt.h"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_i2c.c"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_i2c.h"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_i2c_dma.c"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_i2c_dma.h"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_i2c_freertos.c"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_i2c_freertos.h"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_i2s.c"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_i2s.h"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_i2s_dma.c"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_i2s_dma.h"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_iap.c"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_iap.h"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_iap_ffr.h"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_inputmux.c"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_inputmux.h"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_inputmux_connections.h"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_iocon.h"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_lpadc.c"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_lpadc.h"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_mailbox.h"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_mrt.c"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_mrt.h"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_ostimer.c"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_ostimer.h"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_pint.c"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_pint.h"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_plu.c"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_plu.h"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_power.c"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_power.h"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_powerquad.h"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_powerquad_basic.c"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_powerquad_cmsis.c"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_powerquad_data.c"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_powerquad_data.h"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_powerquad_filter.c"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_powerquad_math.c"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_powerquad_matrix.c"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_powerquad_transform.c"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_prince.c"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_prince.h"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_puf.c"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_puf.h"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_reset.c"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_reset.h"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_rng.c"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_rng.h"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_rtc.c"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_rtc.h"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_sctimer.c"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_sctimer.h"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_sdif.c"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_sdif.h"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_spi.c"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_spi.h"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_spi_dma.c"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_spi_dma.h"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_spi_freertos.c"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_spi_freertos.h"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_sysctl.c"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_sysctl.h"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_usart.c"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_usart.h"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_usart_dma.c"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_usart_dma.h"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_usart_freertos.c"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_usart_freertos.h"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_utick.c"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_utick.h"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_wwdt.c"/>
+                  <F N="../SDK/devices/LPC55S69/drivers/fsl_wwdt.h"/>
+               </Folder>
+               <Folder Name="iar">
+                  <F N="../SDK/devices/LPC55S69/iar/startup_LPC55S69_cm33_core0.s"/>
+                  <F N="../SDK/devices/LPC55S69/iar/startup_LPC55S69_cm33_core1.s"/>
+               </Folder>
+               <F N="../SDK/devices/LPC55S69/fsl_device_registers.h"/>
+               <F N="../SDK/devices/LPC55S69/LPC55S69_cm33_core0.h"/>
+               <F N="../SDK/devices/LPC55S69/LPC55S69_cm33_core0_features.h"/>
+               <F N="../SDK/devices/LPC55S69/LPC55S69_cm33_core1.h"/>
+               <F N="../SDK/devices/LPC55S69/LPC55S69_cm33_core1_features.h"/>
+               <F N="../SDK/devices/LPC55S69/system_LPC55S69_cm33_core0.c"/>
+               <F N="../SDK/devices/LPC55S69/system_LPC55S69_cm33_core0.h"/>
+               <F N="../SDK/devices/LPC55S69/system_LPC55S69_cm33_core1.c"/>
+               <F N="../SDK/devices/LPC55S69/system_LPC55S69_cm33_core1.h"/>
+            </Folder>
+         </Folder>
+         <Folder Name="rtos">
+            <Folder Name="amazon-freertos">
+               <Folder Name="freertos_kernel">
+                  <Folder Name="include">
+                     <F N="../SDK/rtos/amazon-freertos/freertos_kernel/include/atomic.h"/>
+                     <F N="../SDK/rtos/amazon-freertos/freertos_kernel/include/deprecated_definitions.h"/>
+                     <F N="../SDK/rtos/amazon-freertos/freertos_kernel/include/event_groups.h"/>
+                     <F N="../SDK/rtos/amazon-freertos/freertos_kernel/include/FreeRTOS.h"/>
+                     <F N="../SDK/rtos/amazon-freertos/freertos_kernel/include/freertos_tasks_c_additions.h"/>
+                     <F N="../SDK/rtos/amazon-freertos/freertos_kernel/include/list.h"/>
+                     <F N="../SDK/rtos/amazon-freertos/freertos_kernel/include/message_buffer.h"/>
+                     <F N="../SDK/rtos/amazon-freertos/freertos_kernel/include/mpu_prototypes.h"/>
+                     <F N="../SDK/rtos/amazon-freertos/freertos_kernel/include/mpu_wrappers.h"/>
+                     <F N="../SDK/rtos/amazon-freertos/freertos_kernel/include/portable.h"/>
+                     <F N="../SDK/rtos/amazon-freertos/freertos_kernel/include/projdefs.h"/>
+                     <F N="../SDK/rtos/amazon-freertos/freertos_kernel/include/queue.h"/>
+                     <F N="../SDK/rtos/amazon-freertos/freertos_kernel/include/semphr.h"/>
+                     <F N="../SDK/rtos/amazon-freertos/freertos_kernel/include/stack_macros.h"/>
+                     <F N="../SDK/rtos/amazon-freertos/freertos_kernel/include/stream_buffer.h"/>
+                     <F N="../SDK/rtos/amazon-freertos/freertos_kernel/include/task.h"/>
+                     <F N="../SDK/rtos/amazon-freertos/freertos_kernel/include/timers.h"/>
+                  </Folder>
+                  <Folder Name="portable">
+                     <Folder Name="ARMv8M">
+                        <Folder Name="non_secure">
+                           <Folder Name="portable">
+                              <Folder Name="GCC">
+                                 <Folder Name="ARM_CM33">
+                                    <F N="../SDK/rtos/amazon-freertos/freertos_kernel/portable/ARMv8M/non_secure/portable/GCC/ARM_CM33/portasm.c"/>
+                                    <F N="../SDK/rtos/amazon-freertos/freertos_kernel/portable/ARMv8M/non_secure/portable/GCC/ARM_CM33/portmacro.h"/>
+                                 </Folder>
+                                 <Folder Name="ARM_CM33_NTZ">
+                                    <F N="../SDK/rtos/amazon-freertos/freertos_kernel/portable/ARMv8M/non_secure/portable/GCC/ARM_CM33_NTZ/portasm.c"/>
+                                    <F N="../SDK/rtos/amazon-freertos/freertos_kernel/portable/ARMv8M/non_secure/portable/GCC/ARM_CM33_NTZ/portmacro.h"/>
+                                 </Folder>
+                              </Folder>
+                              <Folder Name="IAR">
+                                 <Folder Name="ARM_CM33">
+                                    <F N="../SDK/rtos/amazon-freertos/freertos_kernel/portable/ARMv8M/non_secure/portable/IAR/ARM_CM33/portasm.s"/>
+                                    <F N="../SDK/rtos/amazon-freertos/freertos_kernel/portable/ARMv8M/non_secure/portable/IAR/ARM_CM33/portmacro.h"/>
+                                 </Folder>
+                                 <Folder Name="ARM_CM33_NTZ">
+                                    <F N="../SDK/rtos/amazon-freertos/freertos_kernel/portable/ARMv8M/non_secure/portable/IAR/ARM_CM33_NTZ/portasm.s"/>
+                                    <F N="../SDK/rtos/amazon-freertos/freertos_kernel/portable/ARMv8M/non_secure/portable/IAR/ARM_CM33_NTZ/portmacro.h"/>
+                                 </Folder>
+                              </Folder>
+                           </Folder>
+                           <F N="../SDK/rtos/amazon-freertos/freertos_kernel/portable/ARMv8M/non_secure/port.c"/>
+                           <F N="../SDK/rtos/amazon-freertos/freertos_kernel/portable/ARMv8M/non_secure/portasm.h"/>
+                           <F N="../SDK/rtos/amazon-freertos/freertos_kernel/portable/ARMv8M/non_secure/portmacro.h"/>
+                        </Folder>
+                        <Folder Name="secure">
+                           <Folder Name="context">
+                              <Folder Name="portable">
+                                 <Folder Name="GCC">
+                                    <Folder Name="ARM_CM33">
+                                       <F N="../SDK/rtos/amazon-freertos/freertos_kernel/portable/ARMv8M/secure/context/portable/GCC/ARM_CM33/secure_context_port.c"/>
+                                    </Folder>
+                                 </Folder>
+                                 <Folder Name="IAR">
+                                    <Folder Name="ARM_CM33">
+                                       <F N="../SDK/rtos/amazon-freertos/freertos_kernel/portable/ARMv8M/secure/context/portable/IAR/ARM_CM33/secure_context_port.c"/>
+                                       <F N="../SDK/rtos/amazon-freertos/freertos_kernel/portable/ARMv8M/secure/context/portable/IAR/ARM_CM33/secure_context_port_asm.s"/>
+                                    </Folder>
+                                 </Folder>
+                              </Folder>
+                              <F N="../SDK/rtos/amazon-freertos/freertos_kernel/portable/ARMv8M/secure/context/secure_context.c"/>
+                              <F N="../SDK/rtos/amazon-freertos/freertos_kernel/portable/ARMv8M/secure/context/secure_context.h"/>
+                           </Folder>
+                           <Folder Name="heap">
+                              <F N="../SDK/rtos/amazon-freertos/freertos_kernel/portable/ARMv8M/secure/heap/secure_heap.c"/>
+                              <F N="../SDK/rtos/amazon-freertos/freertos_kernel/portable/ARMv8M/secure/heap/secure_heap.h"/>
+                           </Folder>
+                           <Folder Name="init">
+                              <F N="../SDK/rtos/amazon-freertos/freertos_kernel/portable/ARMv8M/secure/init/secure_init.c"/>
+                              <F N="../SDK/rtos/amazon-freertos/freertos_kernel/portable/ARMv8M/secure/init/secure_init.h"/>
+                           </Folder>
+                           <Folder Name="macros">
+                              <F N="../SDK/rtos/amazon-freertos/freertos_kernel/portable/ARMv8M/secure/macros/secure_port_macros.h"/>
+                           </Folder>
+                        </Folder>
+                     </Folder>
+                     <Folder Name="Common">
+                        <F N="../SDK/rtos/amazon-freertos/freertos_kernel/portable/Common/mpu_wrappers.c"/>
+                     </Folder>
+                     <Folder Name="IAR">
+                        <Folder Name="ARM_CM33">
+                           <Folder Name="non_secure">
+                              <F N="../SDK/rtos/amazon-freertos/freertos_kernel/portable/IAR/ARM_CM33/non_secure/port.c"/>
+                              <F N="../SDK/rtos/amazon-freertos/freertos_kernel/portable/IAR/ARM_CM33/non_secure/portasm.h"/>
+                              <F N="../SDK/rtos/amazon-freertos/freertos_kernel/portable/IAR/ARM_CM33/non_secure/portasm.s"/>
+                              <F N="../SDK/rtos/amazon-freertos/freertos_kernel/portable/IAR/ARM_CM33/non_secure/portmacro.h"/>
+                           </Folder>
+                           <Folder Name="secure">
+                              <F N="../SDK/rtos/amazon-freertos/freertos_kernel/portable/IAR/ARM_CM33/secure/secure_context.c"/>
+                              <F N="../SDK/rtos/amazon-freertos/freertos_kernel/portable/IAR/ARM_CM33/secure/secure_context.h"/>
+                              <F N="../SDK/rtos/amazon-freertos/freertos_kernel/portable/IAR/ARM_CM33/secure/secure_context_port.c"/>
+                              <F N="../SDK/rtos/amazon-freertos/freertos_kernel/portable/IAR/ARM_CM33/secure/secure_context_port_asm.s"/>
+                              <F N="../SDK/rtos/amazon-freertos/freertos_kernel/portable/IAR/ARM_CM33/secure/secure_heap.c"/>
+                              <F N="../SDK/rtos/amazon-freertos/freertos_kernel/portable/IAR/ARM_CM33/secure/secure_heap.h"/>
+                              <F N="../SDK/rtos/amazon-freertos/freertos_kernel/portable/IAR/ARM_CM33/secure/secure_init.c"/>
+                              <F N="../SDK/rtos/amazon-freertos/freertos_kernel/portable/IAR/ARM_CM33/secure/secure_init.h"/>
+                              <F N="../SDK/rtos/amazon-freertos/freertos_kernel/portable/IAR/ARM_CM33/secure/secure_port_macros.h"/>
+                           </Folder>
+                        </Folder>
+                        <Folder Name="ARM_CM33_NTZ">
+                           <Folder Name="non_secure">
+                              <F N="../SDK/rtos/amazon-freertos/freertos_kernel/portable/IAR/ARM_CM33_NTZ/non_secure/port.c"/>
+                              <F N="../SDK/rtos/amazon-freertos/freertos_kernel/portable/IAR/ARM_CM33_NTZ/non_secure/portasm.h"/>
+                              <F N="../SDK/rtos/amazon-freertos/freertos_kernel/portable/IAR/ARM_CM33_NTZ/non_secure/portasm.s"/>
+                              <F N="../SDK/rtos/amazon-freertos/freertos_kernel/portable/IAR/ARM_CM33_NTZ/non_secure/portmacro.h"/>
+                           </Folder>
+                        </Folder>
+                     </Folder>
+                     <Folder Name="MemMang">
+                        <F N="../SDK/rtos/amazon-freertos/freertos_kernel/portable/MemMang/heap_1.c"/>
+                        <F N="../SDK/rtos/amazon-freertos/freertos_kernel/portable/MemMang/heap_2.c"/>
+                        <F N="../SDK/rtos/amazon-freertos/freertos_kernel/portable/MemMang/heap_3.c"/>
+                        <F N="../SDK/rtos/amazon-freertos/freertos_kernel/portable/MemMang/heap_4.c"/>
+                        <F N="../SDK/rtos/amazon-freertos/freertos_kernel/portable/MemMang/heap_5.c"/>
+                        <F N="../SDK/rtos/amazon-freertos/freertos_kernel/portable/MemMang/heap_useNewlib.c"/>
+                     </Folder>
+                  </Folder>
+                  <F N="../SDK/rtos/amazon-freertos/freertos_kernel/event_groups.c"/>
+                  <F N="../SDK/rtos/amazon-freertos/freertos_kernel/list.c"/>
+                  <F N="../SDK/rtos/amazon-freertos/freertos_kernel/queue.c"/>
+                  <F N="../SDK/rtos/amazon-freertos/freertos_kernel/stream_buffer.c"/>
+                  <F N="../SDK/rtos/amazon-freertos/freertos_kernel/tasks.c"/>
+                  <F N="../SDK/rtos/amazon-freertos/freertos_kernel/timers.c"/>
+               </Folder>
+            </Folder>
+         </Folder>
+      </Folder>
+      <Folder Name="Startup">
+         <F N="Startup/board.c"/>
+         <F N="Startup/board.h"/>
+         <F N="Startup/clock_config.c"/>
+         <F N="Startup/clock_config.h"/>
+         <F N="Startup/forthconfig.h"/>
+         <F N="Startup/freertos_usart.c"/>
+         <F N="Startup/FreeRTOSConfig.h"/>
+         <F N="Startup/pin_mux.c"/>
+         <F N="Startup/pin_mux.h"/>
+         <F N="Startup/rtos.h"/>
+         <F N="Startup/startup_LPC55S69_cm33_core0.s"/>
+      </Folder>
+      <F N="main.c"/>
+   </Files>
+</Project>

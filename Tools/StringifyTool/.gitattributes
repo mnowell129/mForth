@@ -1,0 +1,9 @@
+.gitignore     text  eol=lf
+.gitattributes text  eol=lf
+makefile       text  eol=lf
+StringifyMake  text  eol=lf
+*.sh           text  eol=lf
+*.c            text  eol=crlf
+*.h            text  eol=crlf
+*.txt          text  eol=crlf
+
