@@ -1050,9 +1050,9 @@ void  _rpl_vsnprintf(int32_t *length,char *str, size_t size, const char *format,
             case 'f':
                if(cflags == PRINT_C_LDOUBLE)
                {
-                  fvalue = *(double *)(args._Ap);
+                  fvalue = *(double *)(args);
                   // fvalue = va_arg(args,LDOUBLE);
-                  args._Ap += sizeof(double);
+                  args += sizeof(double);
                }
                else
                {
@@ -1080,9 +1080,9 @@ void  _rpl_vsnprintf(int32_t *length,char *str, size_t size, const char *format,
                flags |= PRINT_F_TYPE_E;
                if(cflags == PRINT_C_LDOUBLE)
                {
-                  fvalue = *(double *)(args._Ap);
+                  fvalue = *(double *)(args);
                   // fvalue = va_arg(args,LDOUBLE);
-                  args._Ap += sizeof(double);
+                  args += sizeof(double);
                }
                else
                {
@@ -1104,10 +1104,10 @@ void  _rpl_vsnprintf(int32_t *length,char *str, size_t size, const char *format,
                flags |= PRINT_F_TYPE_G;
                if(cflags == PRINT_C_LDOUBLE)
                {
-                  fvalue = *(double *)(args._Ap);
+                  fvalue = *(double *)(args);
                   // fvalue = va_arg(args,LDOUBLE);
                   // fvalue = va_arg(args,LDOUBLE);
-                  args._Ap += sizeof(double);
+                  args += sizeof(double);
                }
                else
                {

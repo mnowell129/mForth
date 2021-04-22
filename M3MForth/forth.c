@@ -49,8 +49,9 @@ copyright 1998-2011
 #include <string.h>
 #include    <stdlib.h>
 #include    <stdarg.h>
-#include <intrinsics.h>
-
+//#include <intrinsics.h>
+#include <stdint.h>
+#include <ccblkfn.h>
 
 
 #include "type.h"
@@ -64,12 +65,12 @@ copyright 1998-2011
 #include "dos.h"
 #include "float.h"
 
+#include "debugcomms.h"
 
 // OS stuff for OSTimeDly
 // can be removed
 #ifdef USE_OSDELAY
    #include "freertos.h"
-   #include "task.h"
 #endif
 
 /* combines text and code in a single space */
@@ -82,7 +83,7 @@ copyright 1998-2011
 #ifdef M3FIX
    #define  MAKEFUNCTIONCALL(a)  (WordPtr)(((uint32_t)a)|1);
 #else
-   #define MAKEFUNCTIONCALL(a)  (WordPtr)(((uint32_t)a));
+   #define MAKEFUNCTIONCALL(a)  (WordPtr)(((uint32_t)a)|1);
 #endif
 
 
@@ -143,6 +144,7 @@ extern WordList defines1WordList;
 
 void doLIST(UserStatePtr user)
 {
+   #if 0
    uint32_t temp;
    /* header for colon word */
    /* needs to replace the IP */
@@ -157,17 +159,18 @@ void doLIST(UserStatePtr user)
    // this line backs the ip up one, dereferences it to get to the c function we called
    // then make the ip point to the code field that is beyond the c header
    // headersize is word aligned
-   #ifndef M3FIX
-   user->userVariables.namedVariables.ip = (WordPtr *)((byte *)(*((WordPtr *)((user->userVariables.namedVariables.ip) - 1))) + headerSize); /* skip over the header */
-   #else
+      #ifndef M3FIX
+   user->userVariables.namedVariables.ip = (WordPtr *)((uint8_t *)(*((WordPtr *)((user->userVariables.namedVariables.ip) - 1))) + headerSize); /* skip over the header */
+      #else
    // Cortex M3 modification, ip dereferences to an odd value
    // not useful for constant and variable addresses
    temp = ~1 & ((uint32_t)(user->userVariables.namedVariables.ip[-1]));
    temp += headerSize;
 
    user->userVariables.namedVariables.ip = (WordPtr *)(temp);
-   #endif
+      #endif
    /* and point IP to next token */
+   #endif
 }
 
 void doLIT(UserStatePtr user)
@@ -183,7 +186,7 @@ void doVAR(UserStatePtr user)
 
    //    ptr = (WordPtr)(user->userVariables.namedVariables.ip);
    //    ptr -= (WordPtr)sizeof(Cell);  // back up to the previous word
-   //    ptr = (WordPtr)(((Byte *)ptr) - sizeof(Cell));  // back up to the previous word
+   //    ptr = (WordPtr)(((uint8_t *)ptr) - sizeof(Cell));  // back up to the previous word
    //    ptr = (WordPtr)*((WordPtr*)ptr); // follow it to a c function, that would be this one
 
    #ifdef M3FIX
@@ -195,7 +198,7 @@ void doVAR(UserStatePtr user)
    vPtr = (uint32_t *)temp;
    PUSH(user,vPtr);
    #else
-   PUSH(user,((Cell *)((Byte *)(*((WordPtr *)((user->userVariables.namedVariables.ip) - 1))) + headerSize)));
+   PUSH(user,((Cell *)((uint8_t *)(*((WordPtr *)((user->userVariables.namedVariables.ip) - 1))) + headerSize)));
    #endif
 }
 
@@ -207,7 +210,7 @@ void doCONST(UserStatePtr user)
 
    //    ptr = (WordPtr)(user->userVariables.namedVariables.ip);
    //    ptr -= (WordPtr)sizeof(Cell);  // back up to the previous word
-   //    ptr = (WordPtr)(((Byte *)ptr) - sizeof(Cell));  // back up to the previous word
+   //    ptr = (WordPtr)(((uint8_t *)ptr) - sizeof(Cell));  // back up to the previous word
    //    ptr = (WordPtr)*((WordPtr*)ptr); // follow it to a c function, that would be this one
    #ifdef M3FIX
    // Cortex M3 modification, ip dereferences to an odd value
@@ -218,7 +221,7 @@ void doCONST(UserStatePtr user)
    vPtr = (uint32_t *)temp;
    PUSH(user,*vPtr);
    #else
-   push(user,*((Cell *)((Byte *)(*((WordPtr *)((user->userVariables.namedVariables.ip) - 1))) + headerSize)));
+   push(user,*((Cell *)((uint8_t *)(*((WordPtr *)((user->userVariables.namedVariables.ip) - 1))) + headerSize)));
    #endif
 }
 
@@ -228,9 +231,9 @@ void doDOES(UserStatePtr user)
    Cell  *cell;
    *(user->userVariables.namedVariables.rp)++ = (WordPtr *)(user->userVariables.namedVariables.ip);
    // get the address of the does tokens
-   ptr = ((WordPtr *)((Byte *)(*((WordPtr *)((user->userVariables.namedVariables.ip) - 1))) + headerSize));
+   ptr = ((WordPtr *)((uint8_t *)(*((WordPtr *)((user->userVariables.namedVariables.ip) - 1))) + headerSize));
    // get the address of the data portion
-   cell = ((Cell *)((Byte *)(*((WordPtr *)((user->userVariables.namedVariables.ip) - 1))) + headerSize + sizeof(WordPtr)));
+   cell = ((Cell *)((uint8_t *)(*((WordPtr *)((user->userVariables.namedVariables.ip) - 1))) + headerSize + sizeof(WordPtr)));
    // push the address of the data
    PUSH(user,cell);
    // make the ip point to the tokens
@@ -370,7 +373,7 @@ void grepCaseIndep(UserStatePtr user)
    int wordListCount;
    char *match;
    char *delim;
-   
+
    delim = (char *)POP(user);
    delim++;
 
@@ -546,7 +549,7 @@ void words(UserStatePtr user)
 // given the parameters
 // returns 1 for ok 0 for error
 // buffer must meet the worst case alignment
-int32_t createWordListPrimitive(UserStatePtr user,Byte *buffer,int32_t bufferSize,int32_t numberOfNames)
+int32_t createWordListPrimitive(UserStatePtr user,uint8_t *buffer,int32_t bufferSize,int32_t numberOfNames)
 {
    WordList *wordList;
    if(((Cell)buffer) & CELL_ALIGN_MASK)
@@ -588,7 +591,7 @@ int32_t createWordListPrimitive(UserStatePtr user,Byte *buffer,int32_t bufferSiz
 void createWordList(UserStatePtr user)
 {
    MallocType mallocFunction;
-   Byte *buffer;
+   uint8_t *buffer;
    int32_t blockSize;
    int32_t numberOfNames;
    int32_t flag;
@@ -643,8 +646,8 @@ void createWordList(UserStatePtr user)
 void freeWordList(UserStatePtr user)
 {
    FreeType freeFunction;
-   Byte     *buffer;
-   buffer = (Byte *)pop(user);
+   uint8_t     *buffer;
+   buffer = (uint8_t *)pop(user);
    freeFunction = (FreeType)(USER_VAR(user,MALLOC));
    (*freeFunction)(buffer);
 }
@@ -759,11 +762,11 @@ void restrictToCurrentNumber(UserStatePtr user)
    uint32_t i;
    lists = UPOP();
    USER_VAR(user,WORDLISTS) = lists;
-   for(i=0;i<lists;i++)
+   for(i = 0;i < lists;i++)
    {
-      USER_VAR(user,WORDLIST0+i) = UPOP();
+      USER_VAR(user,WORDLIST0 + i) = UPOP();
    }
-   USER_VAR(user,CURRENT) = USER_VAR(user,WORDLIST0+lists-1);
+   USER_VAR(user,CURRENT) = USER_VAR(user,WORDLIST0 + lists - 1);
 
 }
 
@@ -844,12 +847,12 @@ void stackInit(UserStatePtr user)
 #ifdef SECURE
 void dumP(UserStatePtr user)
 {
-   Byte *ptr;
+   uint8_t *ptr;
    int   count;
    int i,j,k;
 
    count = (int)pop(user);
-   ptr = (Byte *)pop(user);
+   ptr = (uint8_t *)pop(user);
    j = count / 16;
    if((j * 16) !=  count)
    {
@@ -892,12 +895,12 @@ void dumP(UserStatePtr user)
 #else // if secure
 void dumP(UserStatePtr user)
 {
-   Byte *ptr;
+   uint8_t *ptr;
    int   count;
    int i,j,k;
 
    count = (int)pop(user);
-   ptr = (Byte *)pop(user);
+   ptr = (uint8_t *)pop(user);
    j = count / 16;
    if((j * 16) !=  count)
    {
@@ -1046,8 +1049,8 @@ void quote(UserStatePtr user)
 // the count is that of the actual number of characters
 void compileString(UserStatePtr user)
 {
-   Int16 length;
-   Byte *ptr;
+   int16_t length;
+   uint8_t *ptr;
    WordList *current;
 
    current = (WordList *)(user->userVariables.indexedVariables[CURRENT]);
@@ -1139,7 +1142,7 @@ void stringQ(UserStatePtr user)
    {
       tailLength = (SignedCell)(tail - ptr);  // get length without the quote
                                               // copy the first part of the string to temp buffer, leave room for
-                                              // count
+      // count
       memcpy(temp + 1,string + 1,length);
       // copy the remainder of the string from the tib
       // note that there had to be a space before the remainder of the string
@@ -1274,7 +1277,7 @@ void plainGets(UserStatePtr user)
    GETS((char *)(user->tibBuffer));
 }
 
-void trimToNewline(Byte *buffer, int32_t length)
+void trimToNewline(uint8_t *buffer, int32_t length)
 {
    while(length-- && (*buffer != '\r') && (*buffer != '\n'))
    {
@@ -1416,14 +1419,14 @@ void createDefine(UserStatePtr user)
 
 void doesGreater(UserStatePtr user)
 {
-   Byte *ptr;
+   uint8_t *ptr;
    WordList *current;
 
    // expects the address on the top of the stack to patch
    current = (WordList *)(user->userVariables.indexedVariables[CURRENT]);
    // needs to find the latest word
    // and take the address of here and put the address in
-   ptr = (Byte *)(current->names[current->last].code);
+   ptr = (uint8_t *)(current->names[current->last].code);
    ptr += headerSize;
    PUSH(user,user->userVariables.namedVariables.ip);
    PUSH(user,ptr);
@@ -1477,7 +1480,7 @@ void doBreak(UserStatePtr user)
 
 
 NameType* cfaSearch(UserStatePtr user,WordPtr searchFor,WordList **whichWordList,int32_t *index);
-Int16 rootLast;
+int16_t rootLast;
 void forget(UserStatePtr user)
 {
    //    WordPtr w;
@@ -1493,7 +1496,7 @@ void forget(UserStatePtr user)
       //     name = cfaSearch(user,w,&whichWordList,&index);
       if(name != NULL)
       {
-         index = ((Byte *)name - (Byte *)whichWordList->names) / sizeof(NameType);
+         index = ((uint8_t *)name - (uint8_t *)whichWordList->names) / sizeof(NameType);
          if(whichWordList == &rootWordList)
          {
             if(index <= rootLast)
@@ -1508,8 +1511,8 @@ void forget(UserStatePtr user)
             return;
          } //if
            //	  FPRINTF("index %d text %x whichWordList %x \n",index,whichWordList->names[index].text,whichWordList);
-           //	  FPRINTF("current CP %x\n",whichWordList->cp);
-           // truncate the name from the wordlist
+         //	  FPRINTF("current CP %x\n",whichWordList->cp);
+         // truncate the name from the wordlist
          whichWordList->cp = (WordPtr *)(whichWordList->names[index].text);
          whichWordList->last = index - 1;
          whichWordList->names[index].text = NULL;
@@ -1546,7 +1549,7 @@ void addHelpFromC(UserStatePtr user)
       //     name = cfaSearch(user,w,&whichWordList,&index);
       if(name != NULL)
       {
-         index = ((Byte *)name - (Byte *)whichWordList->names) / sizeof(NameType);
+         index = ((uint8_t *)name - (uint8_t *)whichWordList->names) / sizeof(NameType);
          if(whichWordList == &coreWordList)
          {
             FPRINTF("Can't add to core\r\n");
@@ -1676,25 +1679,25 @@ void doDelay(UserStatePtr user)
 
 void copy(UserStatePtr user)
 {
-   Byte *source;
-   Byte *destination;
+   uint8_t *source;
+   uint8_t *destination;
    uint32_t count;
 
    count = (uint32_t)UPOP();
-   source = (Byte *)UPOP();
-   destination = (Byte *)UPOP();
+   source = (uint8_t *)UPOP();
+   destination = (uint8_t *)UPOP();
 
    memcpy(destination,source,count);
 }
 void fill(UserStatePtr user)
 {
-   Byte *destination;
+   uint8_t *destination;
    uint32_t count;
    int32_t  value;
 
    count = (uint32_t)UPOP();
    value = (uint32_t)UPOP();
-   destination = (Byte *)UPOP();
+   destination = (uint8_t *)UPOP();
 
    memset(destination,value,count);
 }
@@ -1702,11 +1705,11 @@ void fill(UserStatePtr user)
 
 void subscribe(FCONTEXT)
 {
-   void(* subscribeFunction)(FCONTEXT);
+   void (*subscribeFunction)(FCONTEXT);
 
    if(user->userVariables.namedVariables.subscribePtr)
    {
-      subscribeFunction = (void(*)(FCONTEXT))(user->userVariables.namedVariables.subscribePtr);
+      subscribeFunction = (void (*)(FCONTEXT))(user->userVariables.namedVariables.subscribePtr);
       (*(subscribeFunction))(user);
    }
 }
@@ -1720,6 +1723,22 @@ void subscribe(FCONTEXT)
 
 
 void addExternalWords(UserStatePtr user);
+
+#define MFP(a)    (WordPtr)(((uint32_t)(a))+1) // (WordPtr)(((Cell)(&((a)[0]))|1))
+
+extern const WordPtr catchWord[];
+extern const WordPtr throwWord[];
+extern const WordPtr _abortQuoteWord[];
+extern const WordPtr abortQuoteWord[];
+extern const WordPtr dollarCompileWord[];
+extern const WordPtr dollarInterpretWord[];
+extern const WordPtr dollarArrayWord[];
+extern const WordPtr tickWord[];
+extern const WordPtr evalWord[];
+extern const WordPtr quitWord[];
+extern const WordPtr bracketCOMPILEWord[];
+extern const WordPtr bracketTickWord[];
+
 
 
 /* basic words */
@@ -1765,7 +1784,8 @@ NameType defines1Names[DEFINES1_NAME_MAX] =
 // have the actual text stored here
 #ifdef METHOD_ONE
 // need enough space for the define value and the names
-   #define DEFINES1_CODE_SPACE_SIZE  (DEFINES1_NAME_MAX * 4)
+//
+   #define DEFINES1_CODE_SPACE_SIZE  (DEFINES1_NAME_MAX * 3*sizeof(uint32_t))
 #else
 // here just enough for the names of forth defined words
    #define DEFINES1_CODE_SPACE_SIZE  (20)
@@ -1797,7 +1817,7 @@ void getLastInWordList(UserStatePtr user)
 {
    int i = 1; /* skip over the known beginning null */
    int j;
-   NameType* names;
+   NameType *names;
    names = (NameType *)(pop(user));
    while(names[i].code != NULL)
    {
@@ -1856,7 +1876,7 @@ void initDefines1WordList(UserStatePtr user)
 void addDefines1ToWordlist(UserStatePtr user)
 {
 
-   WordList* current;
+   WordList *current;
    current = (WordList *)(user->userVariables.indexedVariables[CURRENT]);
 
    addName(current,"defines",0);
@@ -1865,6 +1885,9 @@ void addDefines1ToWordlist(UserStatePtr user)
    constantComma(user);        /* lay down the header */
    PUSH(user,&defines1WordList);
    comma(user);
+
+   user->userVariables.indexedVariables[DEFINES] = (Cell)(&defines1WordList);
+
 
    addName(current,"Forth",0);
    current->names[current->last].code = MAKEFUNCTIONCALL(current->cp);
@@ -1883,11 +1906,11 @@ void addDefines1ToWordlist(UserStatePtr user)
 }
 
 #ifdef LOCAL_MALLOC
-Byte* localMalloc(Int16 sizeRequested);
-void localFree(Byte* buffer);
+uint8_t* localMalloc(int16_t sizeRequested);
+void localFree(uint8_t *buffer);
 #endif
 
-void initUser1(const char* initStartString)
+void initUser1(const char *initStartString)
 {
    user1->userVariables.indexedVariables[WORDLIST0] = (Cell)(&coreWordList);
    user1->userVariables.indexedVariables[WORDLIST1] = (Cell)(&rootWordList);
@@ -1913,13 +1936,14 @@ void initUser1(const char* initStartString)
    USER_VAR(user1,USER_ID) = 0;
 
 
+   #error you need to patch these for your system
 
-   user1->userVariables.namedVariables.userPrintf = forthPrintf;
-   user1->userVariables.namedVariables.userPuts =  (PutSType)puts;
-   user1->userVariables.namedVariables.userPutch = (PutchType)putch;
-   user1->userVariables.namedVariables.userGetch = (GetchType)getch;
-   user1->userVariables.namedVariables.userKeyHit = kbhit;
-   user1->userVariables.namedVariables.userGets = (GetsType)gets;
+   user1->userVariables.namedVariables.userPrintf = printfDebug;
+   user1->userVariables.namedVariables.userPuts   =  (PutSType)putsDebug;
+   user1->userVariables.namedVariables.userPutch  = (PutchType)putchDebug;
+   user1->userVariables.namedVariables.userGetch  = (GetchType)getchDebug;
+   user1->userVariables.namedVariables.userKeyHit = (KeyHitType)keyhitDebug;
+   user1->userVariables.namedVariables.userGets   = (GetsType)getsDebug;
    user1->userVariables.namedVariables.getsVector = (GetsVector)plainGets;
 
    USER_VAR(user1,OLD_GETS0) = USER_VAR(user1,GETS_VECTOR);
@@ -1940,7 +1964,7 @@ void radioSilentSetup(UserStatePtr user)
    USER_VAR(user,QUIET) = 0;
 }
 
-void cloneRootUser(UserStatePtr user,const char* initStartString, Byte userid)
+void cloneRootUser(UserStatePtr user,const char *initStartString, uint8_t userid)
 {
    int i;
    // copy all the existing wordlists.
@@ -2001,7 +2025,7 @@ void cloneRootUser(UserStatePtr user,const char* initStartString, Byte userid)
 
 
 
-void initAdditionalUser(UserStatePtr user,const char* initStartString, Byte userid)
+void initAdditionalUser(UserStatePtr user,const char *initStartString, uint8_t userid)
 {
    user->userVariables.indexedVariables[WORDLIST0] = (Cell)(&coreWordList);
    user->userVariables.indexedVariables[WORDLIST1] = (Cell)(&rootWordList);
@@ -2025,7 +2049,7 @@ void initAdditionalUser(UserStatePtr user,const char* initStartString, Byte user
    USER_VAR(user,QUIET) = 0;
 
    USER_VAR(user,USER_ID) = 0;
-   
+
    user->userVariables.namedVariables.getsVector = (GetsVector)plainGets;
    USER_VAR(user,OLD_GETS0) = USER_VAR(user,GETS_VECTOR);
    USER_VAR(user,OLD_GETS1) = USER_VAR(user,GETS_VECTOR);
@@ -2045,7 +2069,7 @@ void initAdditionalUser(UserStatePtr user,const char* initStartString, Byte user
 // Little word to print out the status
 void dictStatus(UserStatePtr user)
 {
-   WordList* current;
+   WordList *current;
    int wordListCount;
    int32_t spaceSize;
    int32_t spaceUsed;
@@ -2117,7 +2141,7 @@ void dictStatus(UserStatePtr user)
 /********************************************************************************************************/
 /********************************************************************************************************/
 // Add a name to the dictionary
-void addName(WordList* wordList,char* name,Byte lex)
+void addName(WordList *wordList,char *name,uint8_t lex)
 {
    int length;
    wordList->last++;
@@ -2128,13 +2152,13 @@ void addName(WordList* wordList,char* name,Byte lex)
 
    #ifdef LONG_STRING_COUNT
    length = strlen(name) + 1;
-   memcpy((Byte *)(wordList->cp) + 1,(void const *)name,length);  // 0 included
-   *((Byte *)(wordList->cp)) = lex | length;
+   memcpy((uint8_t *)(wordList->cp) + 1,(void const *)name,length);  // 0 included
+   *((uint8_t *)(wordList->cp)) = lex | length;
    wordList->cp = cellAlignedMove(wordList->cp,length + 1); /* allow for the zero and count*/
    #else
    length = strlen(name);
-   memcpy((Byte *)(wordList->cp) + 1,(void const *)name,length + 1);  /* copies the 0 */
-   *((Byte *)(wordList->cp)) = lex | length;
+   memcpy((uint8_t *)(wordList->cp) + 1,(void const *)name,length + 1);  /* copies the 0 */
+   *((uint8_t *)(wordList->cp)) = lex | length;
    wordList->cp = cellAlignedMove(wordList->cp,length + 2); /* allow for the zero and count*/
    #endif
 
@@ -2152,12 +2176,15 @@ void addName(WordList* wordList,char* name,Byte lex)
 // size.
 // If things don't behave increase this number
 // this is in pointer sized objects
-#define HEADER_SIZE  4
+#define HEADER_SIZE 5
 #if HEADER_SIZE==2
    #define HEADER_SPACE 0,0
 #endif
 #if HEADER_SIZE==4
    #define HEADER_SPACE 0,0,0,0
+#endif
+#if HEADER_SIZE==5
+   #define HEADER_SPACE 0,0,0,0,0
 #endif
 #if  HEADER_SIZE==7
    #define HEADER_SPACE 0,0,0,0,0,0,0
@@ -2182,31 +2209,43 @@ void noOp(UserStatePtr user)
 
 
 //#pragma location=LOCATION
-WordPtr catchWord[] =
+const WordPtr catchWord[] =
 {
-   HEADER_SPACE,
+   #if TWO_WORD_SOLUTION
+   (WordPtr)THREAD_MASK,
+   #endif
+   (WordPtr)THREAD_HEADER,
    spat,toR,handler,at,toR,rpat,handler,bang,execute,fromR,handler,bang,fromR,drop,doLIT,0,exiT
 };
 
 //#pragma location=LOCATION
-WordPtr throwWord[] =
+const WordPtr throwWord[] =
 {
-   HEADER_SPACE,
+   #if TWO_WORD_SOLUTION
+   (WordPtr)THREAD_MASK,
+   #endif
+   (WordPtr)THREAD_HEADER,
    handler,at,rpstore,fromR,handler,bang,fromR,swap,toR,spstore,drop,fromR,exiT
 };
 
 //#pragma location=LOCATION
-WordPtr _abortQuoteWord[] =
+const WordPtr _abortQuoteWord[] =
 {
-   HEADER_SPACE,
-   qbranch,(WordPtr)5,    doDollar,(WordPtr)throwWord,    branch,(WordPtr)3,
+   #if TWO_WORD_SOLUTION
+   (WordPtr)THREAD_MASK,
+   #endif
+   (WordPtr)THREAD_HEADER,
+   qbranch,(WordPtr)5,    doDollar,MFP(throwWord),    branch,(WordPtr)3,
    doDollar,    drop,    exiT
 };
 //#pragma location=LOCATION
-WordPtr abortQuoteWord[] =
+const WordPtr abortQuoteWord[] =
 {
-   HEADER_SPACE,
-   doLIT,(WordPtr)_abortQuoteWord,comma,fstring,drop,exiT
+   #if TWO_WORD_SOLUTION
+   (WordPtr)THREAD_MASK,
+   #endif
+   (WordPtr)THREAD_HEADER,
+   doLIT,MFP(_abortQuoteWord),comma,fstring,drop,exiT
 };
 // Fatal M3 architecture problem
 // the 3 attached to the qbranch below gets turned into
@@ -2225,9 +2264,12 @@ WordPtr abortQuoteWord[] =
 // Need a noop function
 // Plus any compiled jumps
 //#pragma location=LOCATION
-WordPtr dollarCompileWord[] =
+const WordPtr dollarCompileWord[] =
 {
-   HEADER_SPACE,
+   #if TWO_WORD_SOLUTION
+   (WordPtr)THREAD_MASK,
+   #endif
+   (WordPtr)THREAD_HEADER,
    /* nameQ returns
    either the string pointer and a null if not found
    or the pointer to the word.
@@ -2254,15 +2296,18 @@ WordPtr dollarCompileWord[] =
    for a string lay down the word to push the string value
    */
    stringQ,qDup,qbranch,(WordPtr)3,compileString,exiT,
-   numberQ,equalsZero,qbranch,(WordPtr)4,(WordPtr)throwWord,
+   numberQ,equalsZero,qbranch,(WordPtr)4,MFP(throwWord),
    branch,(WordPtr)4,compile,doLIT,comma,exiT
 };
 
 
 //#pragma location=LOCATION
-WordPtr dollarInterpretWord[] =
+const WordPtr dollarInterpretWord[] =
 {
-   HEADER_SPACE,
+   #if TWO_WORD_SOLUTION
+   (WordPtr)THREAD_MASK,
+   #endif
+   (WordPtr)THREAD_HEADER,
    nameQ,qDup,qbranch,(WordPtr)4,drop,execute,exiT,
    #ifdef METHOD_ONE
    defineQ,qbranch,(WordPtr)3,doDEFINE,exiT,
@@ -2287,7 +2332,7 @@ WordPtr dollarInterpretWord[] =
    stringQ,qDup,qbranch,(WordPtr)4,tempStringBuffer,stringDollar,exiT,
    // if we can't make a string out if it
    // otherwise try to make a number out of it
-   numberQ,qbranch,(WordPtr)2,exiT,(WordPtr)throwWord
+   numberQ,qbranch,(WordPtr)2,exiT,MFP(throwWord)
 };
 
 void compilingQ(UserStatePtr user)
@@ -2303,21 +2348,24 @@ void compilingQ(UserStatePtr user)
 }
 
 
-WordPtr dollarArrayWord[] =
+const WordPtr dollarArrayWord[] =
 {
-   HEADER_SPACE,
+   #if TWO_WORD_SOLUTION
+   (WordPtr)THREAD_MASK,
+   #endif
+   (WordPtr)THREAD_HEADER,
    compilingQ,qbranch,(WordPtr)14,
    // this is the compiling branch
    nameQ,qDup,qbranch,(WordPtr)4,drop,execute,exiT,
    // otherwise make a number out of it and put in the array
-   numberQ,qbranch,(WordPtr)3,comma,exiT,(WordPtr)throwWord,
+   numberQ,qbranch,(WordPtr)3,comma,exiT,MFP(throwWord),
 
    // this is the interpreting branch
    // first try to execute a word if possible
    // this allows the ]ARRAY word to be executed
    nameQ,qDup,qbranch,(WordPtr)4,drop,execute,exiT,
    // otherwise make a number out of it and put in the array
-   numberQ,qbranch,(WordPtr)3,arrayPut,exiT,(WordPtr)throwWord
+   numberQ,qbranch,(WordPtr)3,arrayPut,exiT,MFP(throwWord)
 };
 
 void jungle(FCONTEXT)
@@ -2325,27 +2373,36 @@ void jungle(FCONTEXT)
 }
 
 //#pragma location=LOCATION
-WordPtr tickWord[] =
+const WordPtr tickWord[] =
 {
-   HEADER_SPACE,
+   #if TWO_WORD_SOLUTION
+   (WordPtr)THREAD_MASK,
+   #endif
+   (WordPtr)THREAD_HEADER,
 //    tokeN,nameQ,equalsZero,qbranch,(WordPtr)6,defineQ,qbranch,(WordPtr)2,exiT,(WordPtr)throwWord,exiT
    tokeN,nameQ,equalsZero,qbranch,(WordPtr)8,defineQ,qbranch,(WordPtr)2,exiT,
    drop,doLIT,(WordPtr)0x00,exiT
 };
 //#pragma location=LOCATION
-WordPtr evalWord[] =
+const WordPtr evalWord[] =
 {
-   HEADER_SPACE,
-   tokeN,dupp,_charat,qbranch,(WordPtr)6,
+   #if TWO_WORD_SOLUTION
+   (WordPtr)THREAD_MASK,
+   #endif
+   (WordPtr)THREAD_HEADER,
+   tokeN, dupp, charat, qbranch,(WordPtr)6,
    tickeval,at,execute,branch,(WordPtr)-9,drop,dotPrompt,exiT
 };
 
 
 //#pragma location=LOCATION
-WordPtr quitWord[] =
+const WordPtr quitWord[] =
 {
-   HEADER_SPACE,
-   query,doLIT,(WordPtr)evalWord,(WordPtr)catchWord,qDup,qbranch,(WordPtr)10,
+   #if TWO_WORD_SOLUTION
+   (WordPtr)THREAD_MASK,
+   #endif
+   (WordPtr)THREAD_HEADER,
+   query,doLIT,MFP(evalWord),MFP(catchWord),qDup,qbranch,(WordPtr)10,
    count,type,spzero,spstore,huh,cr,leftBracket,branch,(WordPtr)1,branch,(WordPtr)-17,exiT
 };
 
@@ -2371,32 +2428,41 @@ void exitSingle(UserStatePtr user)
 
 WordPtr singleInterpretWord[] =
 {
-   HEADER_SPACE,
-   dummyQuery,doLIT,(WordPtr)evalWord,(WordPtr)catchWord,qDup,qbranch,(WordPtr)8,
+   #if TWO_WORD_SOLUTION
+   (WordPtr)THREAD_MASK,
+   #endif
+   (WordPtr)THREAD_HEADER, //HEADER_SPACE,
+   dummyQuery,doLIT,MFP(evalWord),(WordPtr)catchWord,qDup,qbranch,(WordPtr)8,
    count,type,spzero,spstore,abortSingle,cr,leftBracket,exitSingle,exiT
 };
 
 
 // immediate word
 //#pragma location=LOCATION
-WordPtr bracketCOMPILEWord[] =
+const WordPtr bracketCOMPILEWord[] =
 {
-   HEADER_SPACE,
-   (WordPtr)tickWord,comma,exiT
+   #if TWO_WORD_SOLUTION
+   (WordPtr)THREAD_MASK,
+   #endif
+   (WordPtr)THREAD_HEADER,
+   MFP(tickWord),comma,exiT
 };
 
 // immediate word
 // [']
 //#pragma location=LOCATION
-WordPtr bracketTickWord[] =
+const WordPtr bracketTickWord[] =
 {
-   HEADER_SPACE,
-   (WordPtr)tickWord,literal,exiT
+   #if TWO_WORD_SOLUTION
+   (WordPtr)THREAD_MASK,
+   #endif
+   (WordPtr)THREAD_HEADER,
+   MFP(tickWord),literal,exiT
 };
 
 
 
-int oneOfThoseWords(void* ptr)
+int oneOfThoseWords(void *ptr)
 {
    if(ptr == bracketTickWord)
    {
@@ -2457,9 +2523,9 @@ int oneOfThoseWords(void* ptr)
 
 }
 
-void makeFunction(void* buffer,int numwords)
+void makeFunction(void *buffer,int numwords)
 {
-   uint32_t* array = (uint32_t *)buffer;
+   uint32_t *array = (uint32_t *)buffer;
    int i;
    for(i = HEADER_SIZE;i < numwords;i++)
    {
@@ -2472,10 +2538,10 @@ void makeFunction(void* buffer,int numwords)
 
 
 #ifdef  M3FIX
-   #define FIXUP(a)      memcpy((Byte *)(a),FUNCTION(jumpColon),headerSize); \
+   #define FIXUP(a)      memcpy((uint8_t *)(a),FUNCTION(jumpColon),headerSize); \
     makeFunction((void *)(a),sizeof(a)/sizeof(WordPtr));
 #else
-   #define FIXUP(a)      memcpy((Byte *)(a),FUNCTION(jumpColon),headerSize);
+   #define FIXUP(a)      memcpy((uint8_t *)(a),FUNCTION(jumpColon),headerSize);
 #endif
 
 
@@ -2500,7 +2566,7 @@ void fixup(void)
 
 void initArrayWords(UserStatePtr user)
 {
-   WordList* current;
+   WordList *current;
 
    current = (WordList *)(user->userVariables.indexedVariables[CURRENT]);
 
@@ -2564,10 +2630,10 @@ void initArrayWords(UserStatePtr user)
    #endif
 }
 
-Byte addWord(UserStatePtr user,WordPtr function,char* name)
+uint8_t addWord(UserStatePtr user,WordPtr function,char *name)
 {
    //    NameType *names;
-   WordList* wordList;
+   WordList *wordList;
 
    wordList = (WordList *)(user->userVariables.indexedVariables[CURRENT]);
    addName(wordList,name,0);
@@ -2580,10 +2646,10 @@ Byte addWord(UserStatePtr user,WordPtr function,char* name)
 } //addword
 
 
-Byte addWordWithHelp(UserStatePtr user,WordPtr function,char* name,char* helpString)
+uint8_t addWordWithHelp(UserStatePtr user,WordPtr function,char *name,char *helpString)
 {
    //    NameType *names;
-   WordList* wordList;
+   WordList *wordList;
 
    wordList = (WordList *)(user->userVariables.indexedVariables[CURRENT]);
    addName(wordList,name,0);
@@ -2600,10 +2666,10 @@ Byte addWordWithHelp(UserStatePtr user,WordPtr function,char* name,char* helpStr
 
 // expects a pointer to a forth word function
 // and a counted string, where bytecount includes the 0 as part of the length
-Byte addWordCountedString(UserStatePtr user,WordPtr function,char* name)
+uint8_t addWordCountedString(UserStatePtr user,WordPtr function,char *name)
 {
    //    NameType *names;
-   WordList* wordList;
+   WordList *wordList;
 
    wordList = (WordList *)(user->userVariables.indexedVariables[CURRENT]);
    wordList->last++;
@@ -2617,10 +2683,10 @@ Byte addWordCountedString(UserStatePtr user,WordPtr function,char* name)
 } //addword
 
 
-Byte addWordCountedStringWithHelp(UserStatePtr user,WordPtr function,char* name,char* helpString)
+uint8_t addWordCountedStringWithHelp(UserStatePtr user,WordPtr function,char *name,char *helpString)
 {
    //    NameType *names;
-   WordList* wordList;
+   WordList *wordList;
 
    wordList = (WordList *)(user->userVariables.indexedVariables[CURRENT]);
    wordList->last++;
@@ -2633,10 +2699,10 @@ Byte addWordCountedStringWithHelp(UserStatePtr user,WordPtr function,char* name,
    return(0);
 } //addword
 
-Byte addWordCountedStringWithHelpCountedString(UserStatePtr user,WordPtr function,char* name,char* helpString)
+uint8_t addWordCountedStringWithHelpCountedString(UserStatePtr user,WordPtr function,char *name,char *helpString)
 {
    //    NameType *names;
-   WordList* wordList;
+   WordList *wordList;
 
    wordList = (WordList *)(user->userVariables.indexedVariables[CURRENT]);
    wordList->last++;
@@ -2651,9 +2717,9 @@ Byte addWordCountedStringWithHelpCountedString(UserStatePtr user,WordPtr functio
 
 
 #if 1
-Byte addDefineCountedString(UserStatePtr user,Cell value,CountedString name)
+uint8_t addDefineCountedString(UserStatePtr user,Cell value,CountedString name)
 {
-   WordList* wordList;
+   WordList *wordList;
    if(USER_VAR(user,DEFINES) == 0)
    {
       printf("No define wordlist!! ");
@@ -2677,10 +2743,10 @@ Byte addDefineCountedString(UserStatePtr user,Cell value,CountedString name)
    #endif
    return(0);
 } //addword
-Byte addDefineCountedStringWithHelpCountedString(UserStatePtr user,Cell value,CountedString name,char* helpString)
+uint8_t addDefineCountedStringWithHelpCountedString(UserStatePtr user,Cell value,CountedString name,char *helpString)
 {
 
-   WordList* wordList;
+   WordList *wordList;
    if(USER_VAR(user,DEFINES) == 0)
    {
       printf("No define wordlist!! ");
@@ -2708,9 +2774,9 @@ Byte addDefineCountedStringWithHelpCountedString(UserStatePtr user,Cell value,Co
    return(0);
 }
 
-Byte addDefineCountedStringWithHelp(UserStatePtr user,Cell value,CountedString name,char* helpString)
+uint8_t addDefineCountedStringWithHelp(UserStatePtr user,Cell value,CountedString name,char *helpString)
 {
-   WordList* wordList;
+   WordList *wordList;
    if(USER_VAR(user,DEFINES) == 0)
    {
       printf("No define wordlist!! ");
@@ -2748,9 +2814,9 @@ void addExternalWords(UserStatePtr user);
 
 #ifdef INCLUDE_CONSTANTS
 
-void makeConstant(const char* const name,const SignedCell value)
+void makeConstant(const char *const name,const SignedCell value)
 {
-   WordList* current;
+   WordList *current;
    current = (WordList *)(user->userVariables.indexedVariables[CURRENT]);
 
    addName(current,(char *)name,0);
@@ -2796,7 +2862,7 @@ void initConstants(void)
 {
    //    int i;
    //    i = 0;
-   UserConstants* constants;
+   UserConstants *constants;
 
    constants = (UserConstants *)userConstantsInit;
    while(constants->name != NULL)
@@ -2828,8 +2894,8 @@ void initConstants(void)
 
 
 
-void strUpr(char* buffer);
-void strUpr(char* string)
+void strUpr(char *buffer);
+void strUpr(char *string)
 {
    while(*string)
    {
@@ -2839,12 +2905,12 @@ void strUpr(char* string)
 }
 
 
-int search(UserStatePtr user,char* buffer)
+int search(UserStatePtr user,char *buffer)
 {
    char local[128];
    int len;
    int end;
-   WordList* current;
+   WordList *current;
 
    current = (WordList *)(user->userVariables.indexedVariables[CURRENT]);
 
@@ -2870,8 +2936,8 @@ int search(UserStatePtr user,char* buffer)
 
 void rpDump(UserStatePtr user)
 {
-   WordPtr** rpTemp;
-   WordPtr** rpStop;
+   WordPtr **rpTemp;
+   WordPtr **rpStop;
    rpTemp = (user->userVariables.namedVariables.rp) - 1;
    rpStop = (WordPtr **)(user->userVariables.namedVariables.rpStart);
    while(rpTemp >= rpStop)
@@ -2882,12 +2948,12 @@ void rpDump(UserStatePtr user)
 
 }
 
-NameType* cfaSearch(UserStatePtr user,WordPtr searchFor,WordList** whichWordList,int32_t* whichIndex)
+NameType* cfaSearch(UserStatePtr user,WordPtr searchFor,WordList **whichWordList,int32_t *whichIndex)
 {
    int32_t end;
    int wordListCount;
-   WordList* searchWordList;
-   NameType* name;
+   WordList *searchWordList;
+   NameType *name;
 
    wordListCount = USER_VAR(user,WORDLISTS);
    wordListCount++; // make sure and search the constants
@@ -2921,10 +2987,10 @@ NameType* cfaSearch(UserStatePtr user,WordPtr searchFor,WordList** whichWordList
    return(NULL);
 } /* search */
 
-void display(UserStatePtr user,WordPtr* tokens,int count)
+void display(UserStatePtr user,WordPtr *tokens,int count)
 {
-   NameType* name;
-   WordList* whichWordList;
+   NameType *name;
+   WordList *whichWordList;
    SignedCell    index;
    int      i;
 
@@ -2943,15 +3009,15 @@ void display(UserStatePtr user,WordPtr* tokens,int count)
 
          Cell value = (Cell)(*tokens);
          #if PTR_SIZE==4
-         FPRINTF(" %02X.%02X.%02X.%02X ....[%c%c%c%c]",(Byte)(value >> 24),(Byte)(value >> 16),(Byte)(value >> 8),(Byte)value,
-                 (isprint((Byte)(value)) ? (Byte)(value) : ' '),
-                 (isprint((Byte)(value >> 8)) ? (Byte)(value >> 8) : ' '),
-                 (isprint((Byte)(value >> 16)) ? (Byte)(value >> 16) : ' '),
-                 (isprint((Byte)(value >> 24)) ? (Byte)(value >> 24) : ' '));
+         FPRINTF(" %02X.%02X.%02X.%02X ....[%c%c%c%c]",(uint8_t)(value >> 24),(uint8_t)(value >> 16),(uint8_t)(value >> 8),(uint8_t)value,
+                 (isprint((uint8_t)(value)) ? (uint8_t)(value) : ' '),
+                 (isprint((uint8_t)(value >> 8)) ? (uint8_t)(value >> 8) : ' '),
+                 (isprint((uint8_t)(value >> 16)) ? (uint8_t)(value >> 16) : ' '),
+                 (isprint((uint8_t)(value >> 24)) ? (uint8_t)(value >> 24) : ' '));
          #else
-         FPRINTF(" %02X.%02X ....[%c%c]",(Byte)(value >> 8),(Byte)value,
-                 (isprint((Byte)(value)) ? (Byte)(value) : ' '),
-                 (isprint((Byte)(value >> 8)) ? (Byte)(value >> 8) : ' '));
+         FPRINTF(" %02X.%02X ....[%c%c]",(uint8_t)(value >> 8),(uint8_t)value,
+                 (isprint((uint8_t)(value)) ? (uint8_t)(value) : ' '),
+                 (isprint((uint8_t)(value >> 8)) ? (uint8_t)(value >> 8) : ' '));
          #endif
 
       }
@@ -2961,9 +3027,9 @@ void display(UserStatePtr user,WordPtr* tokens,int count)
 /* expects a ca */
 void see(UserStatePtr user)
 {
-   uint8_t* p;
-   WordPtr* tokens;
-   WordPtr* tokensBase;
+   uint8_t *p;
+   WordPtr *tokens;
+   WordPtr *tokensBase;
    //    NameType *name;
    //    int  i;
    //    NameType *name;
@@ -3046,7 +3112,7 @@ void see(UserStatePtr user)
 }
 
 #define NUMBER_ERROR_STRINGS 15
-const char* const errorStrings[] =
+const char *const errorStrings[] =
 {
    "Stack empty",
    "Return Stack Empty",
@@ -3057,12 +3123,13 @@ const char* const errorStrings[] =
 
 
 // this initializes the core interpreter before any user contexts run
-void initCoreForth(const char* initStartString)
+void initCoreForth(const char *initStartString)
 {
    unsigned int errorCode;
    UserStatePtr user;
 
 
+   #if 0
    //    printf("Forth...starting\n");
    /****************************************************/
    /* initialization, builds all the root words        */
@@ -3076,7 +3143,6 @@ void initCoreForth(const char* initStartString)
       /* header is not a multiple of a pointer so adjust it */
       headerSize = ((headerSize / align) + 1) * align;
    }
-
    // printf("Header size %d\r\n",headerSize);
    if((HEADER_SIZE * sizeof(Cell)) != headerSize)
    {
@@ -3087,6 +3153,7 @@ void initCoreForth(const char* initStartString)
 
 
    fixup();
+   #endif
 
    // this logic initializes the core forth in context #1
    // other users don't do as much
@@ -3099,34 +3166,20 @@ void initCoreForth(const char* initStartString)
 
    initUser1(initStartString);
 
-   #ifdef GLOBAL_DOS
-   user->doColon = doColon = doLIST;
-   user->doVariable = doVariable = doVAR;
-   user->doConstant = doConstant = doCONST;
-   #else
-   user->doColon = doLIST;
-   user->doVariable = doVAR;
-   user->doConstant = doCONST;
-   #endif
-   //    user->doUser = doUSER;
-   //    user->doDoes = doDoes = doDOES;
-   //    user->doDefine = doDefine = doDEFINE;
+   WordList *current;
+   current = (WordList *)(user->userVariables.indexedVariables[CURRENT]);
+   current->cp = (WordPtr *)codeSpace;
 
 
    // FPRINTF("mForth 0.0\r\n");
    errorCode = setjmp(user->jumper);
    if(errorCode == 0)
    {
-      initArrayWords(user);
+      init(user);
+      // initArrayWords(user);
       // make sure the defines wordlist shows up as a word so you can use it
       // for SOME-WORDS
       addDefines1ToWordlist(user);
-      #ifdef COMPILED_ROOT
-      initWords(user);
-      #endif
-      #ifdef INCLUDE_CONSTANTS
-      initConstants();
-      #endif
       rootLast = rootWordList.last; // user->userVariables.namedVariables.last);
    }
    else
@@ -3161,8 +3214,8 @@ Needs the same fixes applied to execute and @execute
 void perform(UserStatePtr user)
 {
    WordPtr val;
-   WordPtr* temp;
-   WordPtr volatile* ipSave;
+   WordPtr *temp;
+   WordPtr volatile *ipSave;
    WordPtr  indirect[2];
 
    val = (WordPtr)pop(user);
@@ -3170,7 +3223,7 @@ void perform(UserStatePtr user)
    indirect[0] = (WordPtr)val;
 
    // Find the exit for THIS word, not just any exit
-   temp = (WordPtr *)(((Byte *)val) + headerSize);
+   temp = (WordPtr *)(((uint8_t *)val) + headerSize);
    while(*temp != exiT)
    {
       temp++;
@@ -3190,6 +3243,74 @@ void perform(UserStatePtr user)
 
 static volatile int badCall;
 
+void executeCore(FCONTEXT)
+{
+   // if the ip doesnt points to a pointer to threaded word
+   if((*(Cell *)(user->userVariables.namedVariables.ip) & FUNCTION_MASK) == 0)
+   {
+      // this is a native C word
+      // so we call it directly
+      // then call the function
+      (*(user->userVariables.namedVariables.ip)++)(user);
+   }
+   else
+   {
+
+      void *ptr;
+      void *ptr2;
+      // else it's some kind of threaded word
+      // so we have to call it's entrance function
+      rpPush(user,(Cell)(user->userVariables.namedVariables.ip + 1));
+      #if TWO_WORD_SOLUTION
+      ptr = ((Cell *)((uint32_t)(*(Cell **)((uint32_t)(user->userVariables.namedVariables.ip))) & (~FUNCTION_MASK)))[1];
+      #else
+      ptr = ((Cell *)((uint32_t)(*(Cell **)((uint32_t)(user->userVariables.namedVariables.ip))) & (~FUNCTION_MASK)))[0];
+      #endif
+      switch((uint32_t)ptr)
+      {
+         case THREAD_HEADER:
+            {
+               // follow IP into the word.
+               ptr2 = *(user->userVariables.namedVariables.ip);
+               user->userVariables.namedVariables.ip = (WordPtr *)(((uint32_t)(ptr2)) & (~1)); // (WordPtr *) *((WordPtr)((uint32_t)((user->userVariables.namedVariables.ip)) & (~FUNCTION_MASK)));
+               #if TWO_WORD_SOLUTION
+               user->userVariables.namedVariables.ip += 2;
+               #else
+               user->userVariables.namedVariables.ip += 1;
+               #endif
+            }
+            break;
+         case VAR_HEADER:
+            #if TWO_WORD_SOLUTION
+            UPUSH(&(((Cell *)((uint32_t)(*(Cell **)((uint32_t)(user->userVariables.namedVariables.ip))) & (~FUNCTION_MASK)))[2]));
+            #else
+            UPUSH(&(((Cell *)((uint32_t)(*(Cell **)((uint32_t)(user->userVariables.namedVariables.ip))) & (~FUNCTION_MASK)))[1]));
+            #endif
+            user->userVariables.namedVariables.ip += 1;
+            break;
+         case CONST_HEADER:
+            #if TWO_WORD_SOLUTION
+            UPUSH(((Cell *)((uint32_t)(*(Cell **)((uint32_t)(user->userVariables.namedVariables.ip))) & (~FUNCTION_MASK)))[2]);
+            #else
+            UPUSH(((Cell *)((uint32_t)(*(Cell **)((uint32_t)(user->userVariables.namedVariables.ip))) & (~FUNCTION_MASK)))[1]);
+            #endif
+            user->userVariables.namedVariables.ip += 1;
+            break;
+         case DEFINE_HEADER:
+            // For PC or DSP constant and define work the same way
+            // but a define saves on namespace.
+            // Note that this doesn't actually do anything because the core interpreter
+            // or compiler turns it into a constant on the stack or a doLit during compile
+            #if TWO_WORD_SOLUTION
+            UPUSH(((Cell *)((uint32_t)(*(Cell **)((uint32_t)(user->userVariables.namedVariables.ip))) & (~FUNCTION_MASK)))[2]);
+            #else
+            UPUSH(((Cell *)((uint32_t)(*(Cell **)((uint32_t)(user->userVariables.namedVariables.ip))) & (~FUNCTION_MASK)))[1]);
+            #endif
+            user->userVariables.namedVariables.ip += 1;
+            break;
+      }
+   }
+}
 /**
  * Add a local semaphore to be used for pending on events. 
  * Called from C 
@@ -3352,8 +3473,7 @@ void runForth(UserStatePtr user)
 
             while(1)
             {
-
-               (*(user->userVariables.namedVariables.ip)++)(user);
+               executeCore(user);
 
             }
          }
@@ -3372,6 +3492,72 @@ void runForth(UserStatePtr user)
          }
       }
    }
+}
+
+// ***********************************
+// Sample environment code
+// Provide this data, and functions
+// Start other threads can be called in the startString1 startup script
+// by adding "startall" to the script
+// Adding words to the dictionary in addexternal words can be done by adding 
+// "add_exxtern" to this startup script.
+const char startString1[] =
+                            "0x1000 200 wordlist stuff\n"\
+   "stuff add-to-order definitions\n"\
+   "\x04";
+
+void startOtherThreads(FCONTEXT)
+{
+
+}
+
+
+void addExternalWords(FCONTEXT)
+{
+} 
+
+
+/**
+ * Memory allocation for the user Terminal Input Buffer (TIB) 
+ * and the PAD where formatting of output strings takes place 
+ * for the root level forth interpreter. 
+ * Tib is the input where the incoming text stream is placed 
+ * from the user supplied gets() function. 
+ * PAD is used to format numbers for output 
+ */
+///*************************************************************
+///*************************************************************
+#define USER_TIB_SIZE     512
+#define USER_PAD_SIZE     128
+char      tibBuffer1[USER_TIB_SIZE];
+uint32_t  padBuffer1[USER_PAD_SIZE];
+
+
+void forthTask(void *pvParameters)
+{
+   // patch your own usart function here
+   // you need to patch your io routines in conio.h
+   // Also see line 1939
+   uart0Init(115200);
+   #define ESC  "\x1B"
+
+   printf(ESC "[2J" ESC "[H");
+   printf(ESC "[31m" ESC "[40m");
+   printf(ESC "[0m");
+   printf("mForth>\r\n");
+
+   initCoreForth(startString1);
+
+   user1->userVariables.namedVariables.setEcho = NULL;
+   user1->tibBuffer = tibBuffer1;
+   user1->padBuffer = padBuffer1;
+   user1->userVariables.namedVariables.tibSize = USER_TIB_SIZE;
+   user1->userVariables.namedVariables.padSize = USER_PAD_SIZE;
+   user1->userVariables.namedVariables.user_id = ROOT_USER_ID;
+
+   // this never returns
+   runForth(user1);
+
 }
 
 

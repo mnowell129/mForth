@@ -1,7 +1,7 @@
 #ifndef CONIO_H
 #define CONIO_H
 
-#include "usart0.h"
+//#include "usart0.h"
 
 #include <stdarg.h>
 #include <stdint.h>
@@ -31,4 +31,4 @@ void forthPrintf0(char *format,...);
 int vsprintf(char *buffer,const char *format,va_list list);
 int sprintf(char *buffer,const char *format,...);
 int snprintf(char *, size_t, const char *, ...);
-int vsnprintf(char *, size_t, const char *, __Va_list);
+int vsnprintf(char *, size_t, const char *, va_list);

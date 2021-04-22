@@ -353,9 +353,20 @@ I{ restrictToCurrentNumber,  "#restrict",NULL},
  { dotHelp  ,          "help",NULL},
  { startOtherThreads,  "startall",NULL},
  { semaphoreAt,        "sema@",NULL},
-
+ { MFP(catchWord),                "catch",NULL},
+ { MFP(throwWord),                "throw",NULL},
+ { MFP(_abortQuoteWord),          "abort\x22",NULL},
+I{ MFP(abortQuoteWord),           "ABORT\x22",NULL},
+ { MFP(dollarCompileWord),        "$COMPILE",NULL},
+ { MFP(dollarInterpretWord),      "$INTERPRET",NULL},
+ { MFP(dollarArrayWord),          "$ARRAY",NULL},
+ { MFP(tickWord),                 "'",NULL},
+ { MFP(evalWord),                 "EVAL",NULL},
+ { MFP(quitWord),                 "QUIT",NULL},
+I{ MFP(bracketCOMPILEWord),       "[COMPILE]",NULL},
+I{ MFP(bracketTickWord),          "[']",NULL},
     
-    { NULL,              NULL}
+ { NULL,                          NULL,NULL}
 #else
  /* function         counted string with lexicon bits */
  { NULL,              NULL},
@@ -678,5 +689,17 @@ I{ restrictToCurrentNumber,  "#restrict"},
 #endif
  { startOtherThreads,  "startall"},
  { semaphoreAt,        "sema@"},
+ { MFP(catchWord),                "catch"},
+ { MFP(throwWord),                "throw"},
+ { MFP(_abortQuoteWord),          "abort\x22"},
+I{ MFP(abortQuoteWord),           "ABORT\x22"},
+ { MFP(dollarCompileWord),        "$COMPILE"},
+ { MFP(dollarInterpretWord),      "$INTERPRET"},
+ { MFP(dollarArrayWord),          "$ARRAY"},
+ { MFP(tickWord),                 "'"},
+ { MFP(evalWord),                 "EVAL"},
+ { MFP(quitWord),                 "QUIT"},
+I{ MFP(bracketCOMPILEWord),       "[COMPILE]"},
+I{ MFP(bracketTickWord),          "[']"},
  { NULL,              NULL}
 #endif // if use help

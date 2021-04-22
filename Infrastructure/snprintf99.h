@@ -176,11 +176,11 @@
 
 
 #define ULLONG unsigned long int
-#define UINTMAX_T __UINTMAX_T_TYPE__
+#define UINTMAX_T uintmax_t
 // #define UINTMAX_MAX ULLONG_MAX
 #define LDOUBLE long double
 #define LLONG long long int
-#define INTMAX_T __INTMAX_T_TYPE__
+#define INTMAX_T intmax_t
 #define UINTPTR_T unsigned long int
 #define PTRDIFF_T long int
 

@@ -28,6 +28,7 @@ MickeyForth (mForth) forth interpreter.
 copyright 1998-2011
  
 */
+#include <stdint.h>
 #include "type.h"
 #include <setjmp.h>
 #include "ftypes.h"
@@ -129,13 +130,13 @@ void bang(UserStatePtr user)
 }
 void charbang(UserStatePtr user)
 {
-    Byte *ptr;
-    ptr = (Byte *)pop(user);
-    *ptr = (Byte)pop(user);
+    uint8_t *ptr;
+    ptr = (uint8_t *)pop(user);
+    *ptr = (uint8_t)pop(user);
 }
 void charat(UserStatePtr user)
 {
-    Byte *ptr;
+    uint8_t *ptr;
     #ifdef SECURE
     uint32_t address;
     address = (uint32_t)pop(user);
@@ -146,25 +147,25 @@ void charat(UserStatePtr user)
     }
     else
     {
-        ptr = (Byte *)address;
+        ptr = (uint8_t *)address;
         push(user,*ptr);
     }
     #else
-    ptr = (Byte *)pop(user);
+    ptr = (uint8_t *)pop(user);
     push(user,*ptr);
     #endif
 }
 // unsecure version of charat
 void _charat(UserStatePtr user)
 {
-    Byte *ptr;
-    ptr = (Byte *)pop(user);
+    uint8_t *ptr;
+    ptr = (uint8_t *)pop(user);
     push(user,*ptr);
 }
 
 void wordat(UserStatePtr user)
 {
-    Word16 *ptr;
+    uint16_t *ptr;
     #ifdef SECURE
     uint32_t address;
     address = (uint32_t)pop(user);
@@ -175,19 +176,19 @@ void wordat(UserStatePtr user)
     }
     else
     {
-        ptr = (Word16 *)address;
+        ptr = (uint16_t *)address;
         push(user,*ptr);
     }
     #else
-    ptr = (Word16 *)pop(user);
+    ptr = (uint16_t *)pop(user);
     push(user,*ptr);
     #endif
 }
 void wordbang(UserStatePtr user)
 {
-    Word16 *ptr;
-    ptr = (Word16 *)pop(user);
-    *ptr = (Word16)pop(user);
+    uint16_t *ptr;
+    ptr = (uint16_t *)pop(user);
+    *ptr = (uint16_t)pop(user);
 }
 
 

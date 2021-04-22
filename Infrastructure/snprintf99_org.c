@@ -531,7 +531,7 @@ static UINTMAX_T cast(LDOUBLE);
 static UINTMAX_T myround(LDOUBLE);
 static LDOUBLE mypow10(int);
 
-extern int errno;
+//extern int errno;
 
 
 int

@@ -8,7 +8,7 @@ void _printf0(char *format,va_list list)
 {
    int length;
    _rpl_vsnprintf(&length,buffer0,UART0_BUFFER_SIZE,format,list);
-   uart0Send((Byte *)buffer0,length);
+   //uart0Send((Byte *)buffer0,length);
 }
 
 void printf0(char *format,...)

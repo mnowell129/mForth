@@ -60,7 +60,7 @@ void toR(UserStatePtr user);
 void fromR(UserStatePtr user);
 void plusBang(UserStatePtr user);
 void toIN(UserStatePtr user);
-SignedCell parse(char *inbuf, Int16 length, char delim,char **token,SignedCell *tokenLength);
+SignedCell parse(char *inbuf, int16_t length, char delim,char **token,SignedCell *tokenLength);
 void PARSE(UserStatePtr user);
 void PARSEALT(UserStatePtr user);
 void emit(UserStatePtr user);
@@ -74,10 +74,10 @@ void chaR(UserStatePtr user);
 void here(UserStatePtr user);
 #define CELL_ALIGNMENT_MASK CELL_ALIGN_MASK 
 #define CELL_BITS_TO_SHIFT  (CELL/2)
-WordPtr *cellAlignedMove(WordPtr *wp,Int16 length);
+WordPtr *cellAlignedMove(WordPtr *wp,int16_t length);
 void tokeN(UserStatePtr user);
 void word(UserStatePtr user);
-void copyAndConvert(char *destination,char *source, Int16 length);
+void copyAndConvert(char *destination,char *source, int16_t length);
 void stringDollar(UserStatePtr user);
 void _string(UserStatePtr user);
 void fstring(UserStatePtr user);

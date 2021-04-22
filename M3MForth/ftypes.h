@@ -35,6 +35,7 @@ copyright 1998-2011
 // User must include this somewhere in the compile path
 // see forthconfigsample.h for a template
 #include "forthconfig.h"
+#include <stdint.h>
 
 #ifndef _SETJMP
 #include <setjmp.h>
@@ -51,21 +52,22 @@ copyright 1998-2011
 #if PTR_SIZE==2
 typedef struct UserState *UserStatePtr;
 typedef void  (*WordPtr)(UserStatePtr user);
-typedef Word16 *CellPtr;
-typedef Word16  Cell;
-typedef Int16   SignedCell;
+typedef uint16_t *CellPtr;
+typedef uint16_t  Cell;
+typedef int16_t   SignedCell;
 #define CELL 2
 #define CELL_ALIGN_MASK 0x01
 #else
 typedef struct UserState *UserStatePtr;
 typedef void  (*WordPtr)(UserStatePtr user);
 typedef WordPtr CellPtr;
-typedef Int32  SignedCell;
+typedef int32_t  SignedCell;
 typedef uint32_t  Cell;
 #define CELL 4
 #define CELL_ALIGN_MASK 0x03
 #endif
 
+typedef float Float32;
 
 /* the definition of a word pointer */
 /* i.e. a forth token */
@@ -106,12 +108,11 @@ typedef struct
 #define RETURN_STACK_SIZE    64
 
 
-typedef Byte *(*MallocType)(Int16 sizeRequested);
-typedef void  (*FreeType)(Byte *blockToFree);
+typedef uint8_t* (*MallocType)(int16_t sizeRequested);
+typedef void  (*FreeType)(uint8_t *blockToFree);
 typedef const char *(*ExternalStartup)(UserStatePtr user);
 #ifndef PRINTF_TYPE
-#define PRINTF_TYPE
-typedef void  (*PrintfType)(char *format,...);
+typedef void  (*PrintfType)(const char *format,...);
 #endif
 typedef void  (*PutSType)(const char *string);
 typedef char *(*GetsType)(char *buffer);
@@ -170,12 +171,12 @@ typedef enum
       START_STRING,
       //      FILEGETS,
       FILEHANDLE,
-      QUEUE,
+   FQUEUE,
       QUEUEARRAY0,
       QUEUEARRAY1,
       QUEUEARRAY2,
       QUEUEARRAY3,
-      SEMAPHORE,    // semaphore that our thread can wait on, cast to pointer of local type
+   FSEMAPHORE,    // semaphore that our thread can wait on, cast to pointer of local type
       SEMACALLBACK,  // pointer to function that meets local prototype to call back to signal the semaphore
       SUBSCRIBEPTR,
       OUTPUTPTR,     // pointer to a function that outputs variables on this interface
@@ -206,6 +207,22 @@ typedef enum
 //   TIB,CSP,TICKEVAL,TICKNUMBER,HLD,HANDLER,CP,NP,LAST}UserVars;
 
 
+#define CONSTRUCT0(a)          (0xFFFFFFFE | a)
+#define CONSTRUCT1(a)          (a)
+#define FUNCTION_MASK         (1)
+#define THREAD_MASK           CONSTRUCT0(1)
+#define THREAD_HEADER         CONSTRUCT1(1)
+#define VAR_HEADER            CONSTRUCT1(3)
+#define CONST_HEADER          CONSTRUCT1(5)
+#define DEFINE_HEADER         CONSTRUCT1(7)
+#if 0
+#define THREAD_MASK           CONSTRUCT0(1)
+#define THREAD_HEADER         CONSTRUCT1(0)
+#define VAR_HEADER            CONSTRUCT1(1)
+#define CONST_HEADER          CONSTRUCT1(2)
+#define DEFINE_HEADER         CONSTRUCT1(3)
+#endif
+#define SUBTYPE_MASK          0x07
 
 
 typedef struct NamedVariables
@@ -272,7 +289,8 @@ typedef struct NamedVariables
     uint32_t               bufferHead; // linked list of buffers for this context
     uint32_t               bufferTail; 
     uint32_t               string_temp[1];
-}NamedVariables;
+}
+NamedVariables;
 
 // The tib is very large to allow for a full
 // 256 byte message from the acoustic
@@ -309,13 +327,14 @@ typedef struct UserState
     WordPtr  dollarCompile;
     WordPtr  dollarInterpret;
     WordPtr  dollarArray;
-    union
-    {
+   union {
         NamedVariables   namedVariables;
         Cell           indexedVariables[STRING_TEMP+1]; // just needs to be bigger than the
         // number of named variables
-    }userVariables;
-}UserState;
+   }
+   userVariables;
+}
+UserState;
 
 //typedef void  (*WordPtr)(UserStatePtr user);
 
@@ -325,7 +344,8 @@ typedef struct
    UserState           userState;
    WordPtr             initFunction;
    ExternalStartup     externalStartup;
-}Context;
+}
+Context;
 
 
 //#define NUM_USERS 4 // some small value right now
@@ -355,7 +375,7 @@ typedef struct
 #define PACKDOLLAR           4
 #define DOLLARCOMMA          5
 
-Byte addWord(UserStatePtr user,WordPtr function,char *name);
+uint8_t addWord(UserStatePtr user,WordPtr function,char *name);
 
 
 #define FCONTEXT  UserStatePtr user
@@ -367,9 +387,9 @@ Byte addWord(UserStatePtr user,WordPtr function,char *name);
 
 #ifdef M3FIX
 // fixup for cortex m3
-#define FUNCTION(a)  ((Byte *)(((int)a) & (-2)))
+   #define FUNCTION(a)  ((uint8_t *)(((int)a) & (-2)))
 #else
-#define FUNCTION(a)  ((Byte *)a)
+   #define FUNCTION(a)  ((uint8_t *)a)
 #endif
 
 

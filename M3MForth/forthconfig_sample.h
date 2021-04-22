@@ -45,7 +45,7 @@ copyright 1998-2011
 
 // this needs to be defined to use on a cortex m3
 #define M3FIX
-// #undef M3FIX
+ #undef M3FIX
 
 // for a PC based version, probably needs some fixup if this is going to be done
 #define PC
@@ -53,7 +53,7 @@ copyright 1998-2011
 
 
 #define USE_FLOAT
-#undef  USE_FLOAT
+// #undef  USE_FLOAT
 
 #define USE_MATRIX
 #undef USE_MATRIX
@@ -80,23 +80,27 @@ copyright 1998-2011
 #undef  EEPROM_IN
 
 
-#ifdef USE_OSDELAY
+#define USE_OSDELAY
 //#undef USE_OSDELAY
 
 // stuff to get to the desired i/o routines
 // Modify for your application
-#include "target.h"
-#include "uartconst.h"
-#include "uart_core.h"
-#include "uart0.h"
-#include "uart1.h"
-#include "uart2.h"
-#include "printf.h"
-#include "apiport.h"
+// #include "target.h"
+// #include "uartconst.h"
+// #include "uart_core.h"
+// #include "uart0.h"
+// #include "uart1.h"
+// #include "uart2.h"
+// #include "printf.h"
+// #include "apiport.h"
 
 
 // how big the define space is 
-#define DEFINES1_NAME_MAX 20
+#define DEFINES1_NAME_MAX 250
+
+#define TWO_WORD_SOLUTION
+#undef TWO_WORD_SOLUTION
+
 
 
 #endif

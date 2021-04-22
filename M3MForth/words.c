@@ -28,6 +28,7 @@ MickeyForth (mForth) forth interpreter.
 copyright 1998-2011
  
 */
+#include <stdint.h>
 #include <stdio.h>
 #include "type.h"
 #include <setjmp.h>
@@ -59,7 +60,7 @@ WordPtr  dollarInterpret;
 // char     variableSpace[VARIABLE_SPACE_SIZE];
 //#pragma data_alignment=4
 //#pragma location="EMAC_DMA_RAM"
-#pragma location="USB_DMA_RAM"
+//#pragma location "USB_DMA_RAM"
 WordPtr  codeSpace[CODE_SPACE_SIZE];
 // char     nameSpace[NAME_SPACE_SIZE];
 //#pragma data_alignment=4
@@ -95,16 +96,19 @@ void atExecute(UserStatePtr user)
 
 extern void exiT(UserStatePtr user);
 //WordPtr indirect[2] = {NULL,exiT};
+void executeCore(FCONTEXT);
 
 #define FUNCTION2INT(a)  ((((int)a) & (-2)))
 
 static volatile int badCall;
+static volatile void *ptr;
+static volatile void *ptr2;
 // If this calls a "c" function then
 // main will do the call direct
 void execute(UserStatePtr user)
  {
    WordPtr val;
-   //   uint32_t temp;
+   Cell temp;
 
    val = (WordPtr)(pop(user));
    *(user->userVariables.namedVariables.rp)-- = (WordPtr*)(user->userVariables.namedVariables.ip);
@@ -112,7 +116,7 @@ void execute(UserStatePtr user)
    user->userVariables.namedVariables.ipTemp[0] = (WordPtr)(val);
    user->userVariables.namedVariables.ipTemp[1] = (WordPtr)exiT;
    user->userVariables.namedVariables.ip = user->userVariables.namedVariables.ipTemp;
-   (*(user->userVariables.namedVariables.ip)++)(user);
+   executeCore(user);
  }/* execute */
 
 void atExecute(UserStatePtr user)

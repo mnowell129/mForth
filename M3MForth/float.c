@@ -48,6 +48,7 @@ copyright 1998-2011
 #include "corewords.h"
 #include "float.h"
 
+#include <stdarg.h>
 #include "snprintf99.h"
 
 
@@ -66,7 +67,7 @@ void ffdot(UserStatePtr user)
     //    int i;
     //    Byte sign = 0;
 
-    value.int32Value = (Int32)UPOP();
+    value.int32Value = (int32_t)UPOP();
     fvalue = value.float32Value;
     after  = UPOP();
     before = UPOP();
@@ -85,7 +86,7 @@ void ffdotdot(UserStatePtr user)
     uint32_t length;
     int before,after;
 
-    value.int32Value = (Int32)UPOP();
+    value.int32Value = (int32_t)UPOP();
     fvalue = value.float32Value;
     after  = UPOP();
     before = UPOP();
@@ -110,7 +111,7 @@ void edot(UserStatePtr user)
     float   fvalue;
     uint32_t length;
     char        *ptr;
-    value.int32Value = (Int32)UPOP();
+    value.int32Value = (int32_t)UPOP();
     fvalue = value.float32Value;
 
     length = rpl_vsnprintf(buffer,80,"%*.*e",8,5,fvalue);
@@ -130,7 +131,7 @@ void fdot(UserStatePtr user)
     uint32_t length;
     Floater value;
     float   fvalue;
-    value.int32Value = (Int32)UPOP();
+    value.int32Value = (int32_t)UPOP();
     fvalue = value.float32Value;
     length = rpl_vsnprintf(buffer,80," %g",fvalue);
     ptr = buffer;
@@ -149,7 +150,7 @@ void fdotdot(UserStatePtr user)
     uint32_t length;
     Floater value;
     float   fvalue;
-    value.int32Value = (Int32)UPOP();
+    value.int32Value = (int32_t)UPOP();
     fvalue = value.float32Value;
     length = rpl_vsnprintf(buffer,80,"%g",fvalue);
     ptr = buffer;
@@ -169,8 +170,8 @@ void fgreater(UserStatePtr user)
     Floater value1;
     Floater value2;
     
-    value2.int32Value = (Int32)UPOP();
-    value1.int32Value = (Int32)UPOP();
+    value2.int32Value = (int32_t)UPOP();
+    value1.int32Value = (int32_t)UPOP();
     if(value1.float32Value > value2.float32Value)
     {
         push(user,-1);
@@ -185,8 +186,8 @@ void fless(UserStatePtr user)
     Floater value1;
     Floater value2;
     
-    value2.int32Value = (Int32)UPOP();
-    value1.int32Value = (Int32)UPOP();
+    value2.int32Value = (int32_t)UPOP();
+    value1.int32Value = (int32_t)UPOP();
     if(value1.float32Value < value2.float32Value)
     {
         push(user,-1);
@@ -201,8 +202,8 @@ void fequal(UserStatePtr user)
     Floater value1;
     Floater value2;
     
-    value2.int32Value = (Int32)UPOP();
-    value1.int32Value = (Int32)UPOP();
+    value2.int32Value = (int32_t)UPOP();
+    value1.int32Value = (int32_t)UPOP();
     if(value1.float32Value == value2.float32Value)
     {
         push(user,-1);
@@ -217,8 +218,8 @@ void flessThanOrEqual(UserStatePtr user)
     Floater value1;
     Floater value2;
     
-    value2.int32Value = (Int32)UPOP();
-    value1.int32Value = (Int32)UPOP();
+    value2.int32Value = (int32_t)UPOP();
+    value1.int32Value = (int32_t)UPOP();
     if(value1.float32Value <= value2.float32Value)
     {
         push(user,-1);
@@ -233,8 +234,8 @@ void fgreaterThanOrEqual(UserStatePtr user)
     Floater value1;
     Floater value2;
     
-    value2.int32Value = (Int32)UPOP();
-    value1.int32Value = (Int32)UPOP();
+    value2.int32Value = (int32_t)UPOP();
+    value1.int32Value = (int32_t)UPOP();
     if(value1.float32Value >= value2.float32Value)
     {
         push(user,-1);
@@ -253,8 +254,8 @@ void fplus(UserStatePtr user)
     Floater value2;
     Floater value3;
     
-    value2.int32Value = (Int32)UPOP();
-    value1.int32Value = (Int32)UPOP();
+    value2.int32Value = (int32_t)UPOP();
+    value1.int32Value = (int32_t)UPOP();
     value3.float32Value = value1.float32Value + value2.float32Value;
     push(user,value3.int32Value);
  }
@@ -264,8 +265,8 @@ void fminus(UserStatePtr user)
     Floater value2;
     Floater value3;
     
-    value2.int32Value = (Int32)UPOP();
-    value1.int32Value = (Int32)UPOP();
+    value2.int32Value = (int32_t)UPOP();
+    value1.int32Value = (int32_t)UPOP();
     value3.float32Value = value1.float32Value - value2.float32Value;
     push(user,value3.int32Value);
  }
@@ -275,8 +276,8 @@ void ftimes(UserStatePtr user)
     Floater value2;
     Floater value3;
     
-    value2.int32Value = (Int32)UPOP();
-    value1.int32Value = (Int32)UPOP();
+    value2.int32Value = (int32_t)UPOP();
+    value1.int32Value = (int32_t)UPOP();
     value3.float32Value = value1.float32Value * value2.float32Value;
     push(user,value3.int32Value);
  }
@@ -286,8 +287,8 @@ void fdivide(UserStatePtr user)
     Floater value2;
     Floater value3;
     
-    value2.int32Value = (Int32)UPOP();
-    value1.int32Value = (Int32)UPOP();
+    value2.int32Value = (int32_t)UPOP();
+    value1.int32Value = (int32_t)UPOP();
     value3.float32Value = value1.float32Value / value2.float32Value;
     push(user,value3.int32Value);
  }
@@ -303,47 +304,47 @@ void fdivide(UserStatePtr user)
 void fAbs(UserStatePtr user)
  {
     Floater value1;
-    value1.int32Value = (Int32)UPOP();
+    value1.int32Value = (int32_t)UPOP();
     value1.float32Value = fabs(value1.float32Value);
     push(user,value1.int32Value);
  }
 void fNegate(UserStatePtr user)
  {
     Floater value1;
-    value1.int32Value = (Int32)UPOP();
+    value1.int32Value = (int32_t)UPOP();
     value1.float32Value = -value1.float32Value;
     push(user,value1.int32Value);
  }
 void fItoF(UserStatePtr user)
  {
     Floater value1;
-    Int32   value;
-    value = (Int32)UPOP();
+    int32_t   value;
+    value = (int32_t)UPOP();
     value1.float32Value = (float)(value);
     push(user,value1.int32Value);
  }
 void fFtoI(UserStatePtr user)
  {
     Floater value1;
-    Int32   value;
-    value1.int32Value = (Int32)UPOP();
-    value = (Int32)(value1.float32Value);
+    int32_t   value;
+    value1.int32Value = (int32_t)UPOP();
+    value = (int32_t)(value1.float32Value);
     push(user,value);
  }
 
 void fTrunc(UserStatePtr user)
  {
     Floater value1;
-    value1.int32Value = (Int32)UPOP();
-    value1.float32Value = truncf(value1.float32Value);
+    value1.int32Value = (int32_t)UPOP();
+    //value1.float32Value = truncf(value1.float32Value);
     push(user,value1.int32Value);
  }
 
 void fRound(UserStatePtr user)
  {
     Floater value1;
-    value1.int32Value = (Int32)UPOP();
-    value1.float32Value = roundf(value1.float32Value);
+    value1.int32Value = (int32_t)UPOP();
+    //value1.float32Value = roundf(value1.float32Value);
     push(user,value1.int32Value);
  }
 
@@ -359,42 +360,42 @@ void fPi(UserStatePtr user)
 void fSin(UserStatePtr user)
 {
     Floater value1;
-    value1.int32Value = (Int32)UPOP();
+    value1.int32Value = (int32_t)UPOP();
     value1.float32Value = sinf(value1.float32Value);
     push(user,value1.int32Value);
 }
 void fCos(UserStatePtr user)
 {
     Floater value1;
-    value1.int32Value = (Int32)UPOP();
+    value1.int32Value = (int32_t)UPOP();
     value1.float32Value = cosf(value1.float32Value);
     push(user,value1.int32Value);
 }
 void fTan(UserStatePtr user)
 {
     Floater value1;
-    value1.int32Value = (Int32)UPOP();
+    value1.int32Value = (int32_t)UPOP();
     value1.float32Value = tanf(value1.float32Value);
     push(user,value1.int32Value);
 }
 void farcSin(UserStatePtr user)
 {
     Floater value1;
-    value1.int32Value = (Int32)UPOP();
+    value1.int32Value = (int32_t)UPOP();
     value1.float32Value = asinf(value1.float32Value);
     push(user,value1.int32Value);
 }
 void farcCos(UserStatePtr user)
 {
     Floater value1;
-    value1.int32Value = (Int32)UPOP();
+    value1.int32Value = (int32_t)UPOP();
     value1.float32Value = acosf(value1.float32Value);
     push(user,value1.int32Value);
 }
 void farcTan(UserStatePtr user)
 {
     Floater value1;
-    value1.int32Value = (Int32)UPOP();
+    value1.int32Value = (int32_t)UPOP();
     value1.float32Value = atanf(value1.float32Value);
     push(user,value1.int32Value);
 }
@@ -405,8 +406,8 @@ void fPower(UserStatePtr user)
     Floater value1;
     Floater value2;
     Floater value3;
-    value2.int32Value = (Int32)UPOP();
-    value1.int32Value = (Int32)UPOP();
+    value2.int32Value = (int32_t)UPOP();
+    value1.int32Value = (int32_t)UPOP();
     value3.float32Value = powf(value1.float32Value,value2.float32Value);
     push(user,value3.int32Value);
 }
@@ -415,7 +416,7 @@ void fPower(UserStatePtr user)
 void fSqrt(UserStatePtr user)
 {
     Floater value1;
-    value1.int32Value = (Int32)UPOP();
+    value1.int32Value = (int32_t)UPOP();
     value1.float32Value = sqrtf(value1.float32Value);
     push(user,value1.int32Value);
 }
@@ -423,14 +424,14 @@ void fSqrt(UserStatePtr user)
 void fCeil(UserStatePtr user)
 {
     Floater value1;
-    value1.int32Value = (Int32)UPOP();
+    value1.int32Value = (int32_t)UPOP();
     value1.float32Value = ceilf(value1.float32Value);
     push(user,value1.int32Value);
 }
 void fFloor(UserStatePtr user)
 {
     Floater value1;
-    value1.int32Value = (Int32)UPOP();
+    value1.int32Value = (int32_t)UPOP();
     value1.float32Value = floorf(value1.float32Value);
     push(user,value1.int32Value);
 }
@@ -438,7 +439,7 @@ void fFloor(UserStatePtr user)
 void fExp(UserStatePtr user)
 {
     Floater value1;
-    value1.int32Value = (Int32)UPOP();
+    value1.int32Value = (int32_t)UPOP();
     value1.float32Value = expf(value1.float32Value);
     push(user,value1.int32Value);
 }
@@ -446,7 +447,7 @@ void fExp(UserStatePtr user)
 void fLog(UserStatePtr user)
 {
     Floater value1;
-    value1.int32Value = (Int32)UPOP();
+    value1.int32Value = (int32_t)UPOP();
     value1.float32Value = logf(value1.float32Value);
     push(user,value1.int32Value);
 }
@@ -455,7 +456,7 @@ void fLog(UserStatePtr user)
 void fRadiansToDegrees(UserStatePtr user)
 {
     Floater value1;
-    value1.int32Value = (Int32)UPOP();
+    value1.int32Value = (int32_t)UPOP();
     value1.float32Value = (value1.float32Value * 180.0) / (4.0 *atanf(1.0));
     push(user,value1.int32Value);
 }
@@ -463,7 +464,7 @@ void fRadiansToDegrees(UserStatePtr user)
 void fDegreesToRadians(UserStatePtr user)
 {
     Floater value1;
-    value1.int32Value = (Int32)UPOP();
+    value1.int32Value = (int32_t)UPOP();
     value1.float32Value = (value1.float32Value * (4.0 *atanf(1.0)))/(180.0);
     push(user,value1.int32Value);
 }
@@ -697,8 +698,8 @@ void mComputeVectorMagnitude2D(UserStatePtr user)
     // Float32 VectorMagnitude2D(Float32 xValue, Float32 yValue);
     Floater result;
     Floater xValue,yValue;
-    yValue.int32Value = (Int32)UPOP();
-    xValue.int32Value = (Int32)UPOP();
+    yValue.int32Value = (int32_t)UPOP();
+    xValue.int32Value = (int32_t)UPOP();
     result.float32Value = VectorMagnitude2D(xValue.float32Value,yValue.float32Value);;
     UPUSH(result.int32Value);
 }

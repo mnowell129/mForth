@@ -28,6 +28,7 @@ MickeyForth (mForth) forth interpreter.
 copyright 1998-2011
  
 */
+#include <stdint.h>
 #include "type.h"
 
 #include "bits.h"
@@ -36,6 +37,7 @@ copyright 1998-2011
 #include "words.h"
 #include "corewords.h"
 #include "forth.h"
+#include "dos.h"
 
 #define INLINE
 #undef INLINE

@@ -75,7 +75,7 @@ extern UserStatePtr user1;
 
 //#define POP  pop(user)
 #define POP_INT (int)pop(user)
-#define POP_BYTE (Byte)pop(user)
+#define POP_BYTE (uint8_t)pop(user)
 #define POP_WORD (Word16)pop(user)
 
 
@@ -134,7 +134,7 @@ void dollarCommaN(UserStatePtr user);
 void constantComma(UserStatePtr user);
 void comma(UserStatePtr user);
 
-extern Byte forthQuiet;
+extern uint8_t forthQuiet;
 
 void beQuiet(UserStatePtr user);
 void beLoud(UserStatePtr user);
@@ -177,7 +177,7 @@ void toR(UserStatePtr user);
 void fromR(UserStatePtr user);
 void plusBang(UserStatePtr user);
 void toIN(UserStatePtr user);
-SignedCell parse(char *inbuf, Int16 length, char delim,char **token,SignedCell *tokenLength);
+SignedCell parse(char *inbuf, int16_t length, char delim,char **token,SignedCell *tokenLength);
 void PARSE(UserStatePtr user);
 void emit(UserStatePtr user);
 
@@ -188,10 +188,10 @@ void backSlash(UserStatePtr user);
 void leftParen(UserStatePtr user);
 void chaR(UserStatePtr user);
 void here(UserStatePtr user);
-WordPtr *cellAlignedMove(WordPtr *wp,Int16 length);
+WordPtr *cellAlignedMove(WordPtr *wp,int16_t length);
 void tokeN(UserStatePtr user);
 void word(UserStatePtr user);
-void copyAndConvert(char *destination,char *source, Int16 length);
+void copyAndConvert(char *destination,char *source, int16_t length);
 void stringDollar(UserStatePtr user);
 void _string(UserStatePtr user);
 void fstring(UserStatePtr user);
@@ -264,7 +264,7 @@ void whilE(UserStatePtr user);
 void repeaT(UserStatePtr user);
 void lasT(UserStatePtr user);
 NameType  *cfaSearch(UserStatePtr user,WordPtr searchFor,WordList **whichWordList,SignedCell *index);
-extern Int16 rootLast;
+extern int16_t rootLast;
 void forget(UserStatePtr user);
 void immediate(UserStatePtr user);
 void doDollar(UserStatePtr user);
@@ -299,16 +299,16 @@ void words(UserStatePtr user);
 extern NameType rootNames[];
 int getLast(UserStatePtr user);
 extern const char  * const (baseWords[]);
-void addName(WordList *wordList,char *name,Byte lex);
+void addName(WordList *wordList,char *name,uint8_t lex);
 // the external call word
-Byte addWord(UserStatePtr user,WordPtr function,char *name);
-Byte addWordWithHelp(UserStatePtr user,WordPtr function,char *name,char *helpString);
-Byte addWordCountedStringWithHelp(UserStatePtr user,WordPtr function,char *name,char *helpString);
-Byte addWordCountedStringWithHelpCountedString(UserStatePtr user,WordPtr function,char *name,char *helpString);
-Byte addWordCountedString(UserStatePtr user,WordPtr function,char *name);
-Byte addDefineCountedString(UserStatePtr user,Cell value,CountedString name);
-Byte addDefineCountedStringWithHelp(UserStatePtr user,Cell value,CountedString name,char *helpString);
-Byte addDefineCountedStringWithHelpCountedString(UserStatePtr user,Cell value,CountedString name,char *helpString);
+uint8_t addWord(UserStatePtr user,WordPtr function,char *name);
+uint8_t addWordWithHelp(UserStatePtr user,WordPtr function,char *name,char *helpString);
+uint8_t addWordCountedStringWithHelp(UserStatePtr user,WordPtr function,char *name,char *helpString);
+uint8_t addWordCountedStringWithHelpCountedString(UserStatePtr user,WordPtr function,char *name,char *helpString);
+uint8_t addWordCountedString(UserStatePtr user,WordPtr function,char *name);
+uint8_t addDefineCountedString(UserStatePtr user,Cell value,CountedString name);
+uint8_t addDefineCountedStringWithHelp(UserStatePtr user,Cell value,CountedString name,char *helpString);
+uint8_t addDefineCountedStringWithHelpCountedString(UserStatePtr user,Cell value,CountedString name,char *helpString);
 
 void addExternalWords(UserStatePtr user);
 void addExternalDBWords(FCONTEXT);
@@ -348,7 +348,7 @@ void dummyQuery(UserStatePtr user);
 void initCoreForth(const char *initStartString);
 void startOtherThreads(UserStatePtr user);
 void perform(UserStatePtr user);
-void cloneRootUser(UserStatePtr user,const char *initStartString, Byte userid);
+void cloneRootUser(UserStatePtr user,const char *initStartString, uint8_t userid);
 void radioSilentSetup(UserStatePtr user);
 
 void semaphoreAt(FCONTEXT);
@@ -356,7 +356,7 @@ void addSemaphoreLogic(UserStatePtr user,uint32_t semaphore,uint32_t callBack);
 
 
 
-void trimToNewline(Byte *buffer, int32_t length);
+void trimToNewline(uint8_t *buffer, int32_t length);
 
 void closeFile(UserStatePtr user);
 void openFile(UserStatePtr user);
