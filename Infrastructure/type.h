@@ -1,19 +1,8 @@
 /**
- ***************************************************************
- ***************************************************************
- * MEDTRONIC CONFIDENTIAL - This document is the property of 
- * Medtronic, Inc.,and must be accounted for. Information herein 
- * is confidential. Do not reproduce it, reveal it to 
- * unauthorized persons, or send it outside Medtronic without 
- * proper authorization.
- * 
- * Copyright Medtronic, Inc. 2018
- ***************************************************************
- ***************************************************************
  *  
  * @brief   type
  * 
- * @author nowelc2 
+ * @author  Charles M Nowell, Jr.
  * 
  ***************************************************************
  ***************************************************************
